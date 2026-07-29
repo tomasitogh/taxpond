@@ -8,6 +8,9 @@ import {
   Sun,
   Moon,
   ChevronDown,
+  ChevronRight,
+  Menu,
+  X,
   BarChart3,
   ArrowRight,
   Sparkles,
@@ -84,6 +87,8 @@ export function Navbar() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
   const [productsOpen, setProductsOpen] = React.useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  const [mobileProductsOpen, setMobileProductsOpen] = React.useState(false)
   const [lang, setLang] = React.useState<"EN" | "ES">("EN")
   const productsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
@@ -172,7 +177,7 @@ export function Navbar() {
           </Link>
         </nav>
 
-        {/* Right: Language Selector + Theme Toggle */}
+        {/* Right: Language Selector + Theme Toggle + Mobile Menu Toggle */}
         <div className="flex items-center gap-2">
           {/* Language Selector */}
           <DropdownMenu>
@@ -207,8 +212,81 @@ export function Navbar() {
               <Moon className="h-4 w-4" />
             )}
           </button>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted md:hidden"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <div className="border-t border-border bg-background/95 backdrop-blur-md md:hidden">
+          <nav className="mx-auto max-w-7xl px-6 py-4">
+            {/* Products Section */}
+            <div>
+              <button
+                onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
+                className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              >
+                Products
+                <ChevronRight
+                  className={`h-4 w-4 text-muted-foreground transition-transform ${
+                    mobileProductsOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {mobileProductsOpen && (
+                <div className="mt-1 space-y-1 pl-3">
+                  {PRODUCTS.map((product) => {
+                    const styles = BADGE_STYLES[product.badge.color]
+                    const Icon = product.icon
+                    return (
+                      <Link
+                        key={product.href}
+                        href={product.href}
+                        className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-accent"
+                        onClick={() => {
+                          setMobileMenuOpen(false)
+                          setMobileProductsOpen(false)
+                        }}
+                      >
+                        <div
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${styles.bg}`}
+                        >
+                          <Icon className={`h-4 w-4 ${styles.text}`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-foreground">
+                            {product.title}
+                          </div>
+                          <div className={`text-xs ${styles.text}`}>
+                            {product.badge.label}
+                          </div>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Company Link */}
+            <Link
+              href="/company"
+              className="mt-1 block rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Company
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
