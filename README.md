@@ -52,3 +52,26 @@ npm install or pnpm install
 # 3. Inicia el servidor de desarrollo
 npm run dev or pnpm dev
 ```
+
+Abre http://localhost:3000 en tu navegador para ver la aplicación en funcionamiento.
+
+🗺️ Roadmap
+[ ] Motor de procesamiento CSV/Excel en WASM.
+
+[ ] Grilla de datos interactiva (Filtros y Group By).
+
+[ ] Validador sintáctico de Tax IDs (Regex) para LATAM.
+
+[ ] Integración AI (Chat-to-SQL y Auto-Categorización).
+
+[ ] Live API Verification contra entidades gubernamentales (AFIP, Receita Federal, etc.).
+
+[ ] Soporte para procesamiento Batch mediante colas.
+
+🤝 Contribuciones
+Taxpond es un proyecto de modelo Open Core. Creemos que la infraestructura de datos financieros debe ser auditable, transparente y accesible.
+
+Las contribuciones de la comunidad son clave. Ya sea mejorando la UI, agregando validadores Regex para nuevos países, o mejorando el rendimiento de las consultas SQL locales. Lee nuestra guía de contribución CONTRIBUTING.md para empezar.
+
+📄 Licencia
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
