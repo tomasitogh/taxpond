@@ -3,19 +3,6 @@
 import * as React from "react"
 import { Upload, ArrowRight, FileText, CheckCircle2 } from "lucide-react"
 
-const BAR_DATA = [
-  { label: "Jan", value: 40 },
-  { label: "Feb", value: 55 },
-  { label: "Mar", value: 70 },
-  { label: "Apr", value: 45 },
-  { label: "May", value: 85 },
-  { label: "Jun", value: 60 },
-  { label: "Jul", value: 90 },
-  { label: "Aug", value: 75 },
-]
-
-const MAX_VALUE = Math.max(...BAR_DATA.map((d) => d.value))
-
 export default function TaxProcessorPage() {
   const [isDragOver, setIsDragOver] = React.useState(false)
 
@@ -77,51 +64,40 @@ export default function TaxProcessorPage() {
           {/* Arrow */}
           <ArrowRight className="h-10 w-10 shrink-0 text-muted-foreground" />
 
-          {/* Step 2: Chart */}
+          {/* Step 2: Table Preview */}
           <div className="flex flex-col items-center gap-3">
-            <div className="flex h-40 w-72 items-end justify-center gap-2 rounded-xl border border-border bg-card p-4">
-              {BAR_DATA.map((bar) => (
-                <div
-                  key={bar.label}
-                  className="flex flex-col items-center gap-1"
-                >
-                  <div
-                    className="w-6 rounded-sm bg-[#FFD600] transition-all"
-                    style={{
-                      height: `${(bar.value / MAX_VALUE) * 100}px`,
-                    }}
-                  />
-                  <span className="font-data text-[10px] text-muted-foreground">
-                    {bar.label}
-                  </span>
+            <div className="h-40 w-72 overflow-hidden rounded-xl border border-border bg-card p-3">
+              <div className="flex items-center gap-2 border-b border-border pb-2">
+                <div className="h-3 w-3 rounded border border-border" />
+                <span className="text-[10px] font-medium text-muted-foreground">
+                  Tax Id
+                </span>
+                <span className="text-[10px] font-medium text-muted-foreground">
+                  Amount
+                </span>
+              </div>
+              <div className="mt-2 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded border border-border" />
+                  <span className="text-[10px] text-foreground">AEFR43</span>
+                  <span className="text-[10px] text-foreground">$32M</span>
                 </div>
-              ))}
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded border border-border" />
+                  <span className="text-[10px] text-foreground">ADS2213</span>
+                  <span className="text-[10px] text-foreground">$18M</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded border border-border" />
+                  <span className="text-[10px] text-foreground">ASDAS33</span>
+                  <span className="text-[10px] text-foreground">$5M</span>
+                </div>
+              </div>
             </div>
             <span className="text-xs text-muted-foreground">
               Step 2 — Visualize
             </span>
           </div>
-        </div>
-      </section>
-
-      {/* Supported Formats */}
-      <section className="mt-8 rounded-xl border border-border p-8">
-        <h2 className="text-lg font-semibold text-foreground">
-          Supported formats
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          We accept the most common financial data formats
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          {["CSV", "XLSX", "XLS", "PDF", "OFX", "QIF"].map((fmt) => (
-            <span
-              key={fmt}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground"
-            >
-              <FileText className="h-3 w-3 text-muted-foreground" />
-              {fmt}
-            </span>
-          ))}
         </div>
       </section>
 
@@ -171,6 +147,27 @@ export default function TaxProcessorPage() {
                 {report.status}
               </span>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Supported Formats */}
+      <section className="mt-8 rounded-xl border border-border p-8">
+        <h2 className="text-lg font-semibold text-foreground">
+          Supported formats
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          We accept the most common financial data formats
+        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          {["CSV", "XLSX", "XLS", "PDF", "OFX", "QIF"].map((fmt) => (
+            <span
+              key={fmt}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground"
+            >
+              <FileText className="h-3 w-3 text-muted-foreground" />
+              {fmt}
+            </span>
           ))}
         </div>
       </section>

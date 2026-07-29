@@ -68,15 +68,13 @@ export default function CompanyPage() {
           The Team
         </h2>
         <p className="mt-3 leading-relaxed text-muted-foreground">
-          We are a remote-first team of 14 people spread across Buenos Aires,
-          Madrid, and Berlin. Our backgrounds span Big Four accounting firms,
+          We are a remote-first team of 2 people spread across Buenos Aires. Our backgrounds span Big Four accounting firms,
           fintech startups, and open-source maintainers.
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           {[
-            { name: "Ana Torres", role: "CEO & Co-founder" },
-            { name: "Marcos Vega", role: "CTO & Co-founder" },
-            { name: "Lucia Schmidt", role: "Head of Product" },
+            { name: "Tomás González Humphreys", role: "CEO & Co-Founder" },
+            { name: "Luciana Pirruccio", role: "Head of Product" },
           ].map((person) => (
             <div
               key={person.name}

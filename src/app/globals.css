@@ -40,7 +40,12 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-black: #000;
   --color-yellow: #FFD600;
+  --color-purple: #8b5cf6;
+  --color-purple-light: #8b5cf61a;
+  --color-green: #22c55e;
+  --color-green-light: #22c55e1a;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -123,9 +128,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }

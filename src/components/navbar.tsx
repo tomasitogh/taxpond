@@ -10,6 +10,9 @@ import {
   ChevronDown,
   BarChart3,
   ArrowRight,
+  Sparkles,
+  FileSearch,
+  type LucideIcon,
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -17,6 +20,65 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
+type ProductBadge = {
+  label: string
+  color: "purple" | "green" | "yellow" | "black"
+}
+
+type Product = {
+  title: string
+  href: string
+  icon: LucideIcon
+  badge: ProductBadge
+}
+
+const PRODUCTS: Product[] = [
+  {
+    title: "Tax reports processor",
+    href: "/tax-processor",
+    icon: BarChart3,
+    badge: { label: "Try for free!", color: "green" },
+  },
+  {
+    title: "AI Conciliation",
+    href: "/conciliation",
+    icon: Sparkles,
+    badge: { label: "AI Powered", color: "purple" },
+  },
+  {
+    title: "Smart Audits",
+    href: "/audits",
+    icon: FileSearch,
+    badge: { label: "Dont miss more revenue!", color: "black"},
+  },
+  {
+    title: "Tax Calendar",
+    href: "/calendar",
+    icon: BarChart3,
+    badge: { label: "Try for free!", color: "green" },
+  },
+]
+
+const BADGE_STYLES: Record<ProductBadge["color"], { bg: string; text: string }> = {
+  green: {
+    bg: "bg-green-light",
+    text: "text-green",
+  },
+  purple: {
+    bg: "bg-purple-light",
+    text: "text-purple",
+  },
+  yellow: {
+    bg: "bg-yellow/10",
+    text: "text-yellow",
+  },
+  black: {
+    bg: "bg-yellow/10",
+    text: "text-black",
+  }
+
+}
 
 export function Navbar() {
   const { theme, setTheme } = useTheme()
@@ -70,24 +132,33 @@ export function Navbar() {
                 onMouseEnter={handleProductsEnter}
                 onMouseLeave={handleProductsLeave}
               >
-                <Link
-                  href="/tax-processor"
-                  className="group flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-accent"
-                  onClick={() => setProductsOpen(false)}
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#FFD600]/10">
-                    <BarChart3 className="h-5 w-5 text-[#FFD600]" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-foreground">
-                      Tax reports processor
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Try for free!
-                    </div>
-                  </div>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                </Link>
+                {PRODUCTS.map((product) => {
+                  const styles = BADGE_STYLES[product.badge.color]
+                  const Icon = product.icon
+                  return (
+                    <Link
+                      key={product.href}
+                      href={product.href}
+                      className="group flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-accent"
+                      onClick={() => setProductsOpen(false)}
+                    >
+                      <div
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${styles.bg}`}
+                      >
+                        <Icon className={`h-5 w-5 ${styles.text}`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-foreground">
+                          {product.title}
+                        </div>
+                        <div className={`text-xs ${styles.text}`}>
+                          {product.badge.label}
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  )
+                })}
               </div>
             )}
           </div>

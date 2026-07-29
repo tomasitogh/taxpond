@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦆 Taxpond
 
-## Getting Started
+**Procesa, limpia y concilia millones de registros impositivos en milisegundos. Directamente en tu navegador.**
 
-First, run the development server:
+[![Open Source](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badges/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![DuckDB](https://img.shields.io/badge/DuckDB-WASM-yellow)](https://duckdb.org/)
+
+Los sistemas tradicionales colapsan al cruzar reportes financieros masivos, y subir tus libros mayores a la nube expone información confidencial. **Taxpond** resuelve esto cambiando el paradigma: llevamos el motor de la base de datos a tu cliente.
+
+> _"Los datos siempre fueron y serán tuyos. No solo son tuyos, sino que te los podemos mejorar sin exponerlos."_
+
+## ✨ Características Principales
+
+### 🔒 Privacidad Absoluta (Client-Side First)
+
+Todo el procesamiento pesado (agrupaciones, filtros, cruces) ocurre en la memoria de tu dispositivo gracias a **DuckDB WASM**. Tus archivos CSV o Excel con datos financieros y contables sensibles nunca tocan nuestros servidores.
+
+### ⚡ Rendimiento Extremo
+
+Olvida las planillas que se tildan. Sube 500.000 filas y ejecuta agrupaciones o `JOINs` complejos en milisegundos sin consumir cuota de nube.
+
+### ✅ Validador Masivo de Tax IDs
+
+Detecta al instante identificadores impositivos rotos antes de presentar tus declaraciones. Taxpond incluye un motor nativo de expresiones regulares para validar formatos de múltiples países en bloque (CUIT, RUT, RFC, CNPJ) al instante y sin costo.
+
+### 🤖 AI-Powered Data Cleaning (Premium)
+
+Mejoramos tus datos sin exponerlos. A través de integraciones seguras, utilizamos modelos de lenguaje (LLMs) para mapear columnas sucias, categorizar gastos y normalizar formatos de moneda automáticamente.
+
+## 🛠️ Stack Tecnológico
+
+Taxpond está construido sobre una arquitectura moderna enfocada en el rendimiento y la experiencia de usuario:
+
+- **Framework:** Next.js (App Router) + TypeScript
+- **Data Engine:** DuckDB (WebAssembly)
+- **Styling:** Tailwind CSS + Shadcn UI
+- **Icons:** Lucide React
+
+## 🚀 Getting Started
+
+Levanta el entorno de desarrollo local en menos de 2 minutos:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Clona el repositorio
+git clone [https://github.com/tu-usuario/taxpond.git](https://github.com/tu-usuario/taxpond.git)
+
+# 2. Instala las dependencias
+cd taxpond
+npm install or pnpm install
+
+# 3. Inicia el servidor de desarrollo
+npm run dev or pnpm dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
