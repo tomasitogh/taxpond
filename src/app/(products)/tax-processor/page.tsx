@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { Upload, ArrowRight, FileText, CheckCircle2 } from "lucide-react"
+import Link from "next/link"
+
 
 export default function TaxProcessorPage() {
   const [isDragOver, setIsDragOver] = React.useState(false)
@@ -169,6 +171,35 @@ export default function TaxProcessorPage() {
               {fmt}
             </span>
           ))}
+        </div>
+      </section>
+
+
+
+      {/* Try out */}
+      <section className="flex min-h-[calc(60vh-4rem)] flex-col items-center justify-center text-center">
+        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-6xl">
+          Try now,
+          <br />
+          for <span className="text-green">free</span>.
+        </h1>
+        <p className="mt-6 max-w-md text-lg text-muted-foreground">
+          Upload any data, see how it works. You&apos;ll like it.
+        </p>
+        <div className="mt-8 flex gap-3">
+          <Link
+            href="/tax-processor/try"
+            className="inline-flex items-center gap-2 rounded-full bg-[#FFD600] px-5 py-2.5 text-sm font-semibold text-black transition-colors hover:bg-[#e6c000]"
+          >
+            Try now!
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+          <Link
+            href="/company"
+            className="inline-flex items-center rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          >
+            About us
+          </Link>
         </div>
       </section>
     </div>
