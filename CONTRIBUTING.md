@@ -19,7 +19,8 @@ cd taxpond/taxpond-app
 pnpm install
 
 # Start the dev server (opens at http://localhost:3000)
-pnpm dev
+# IMPORTANT: Use --webpack flag (Turbopack is not configured for this project because turbopack has problems with WASM)
+pnpm dev --webpack
 
 # In a separate terminal, run linting and type checks
 pnpm lint

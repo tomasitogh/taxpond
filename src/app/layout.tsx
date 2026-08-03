@@ -20,6 +20,9 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: 'Taxpond - Tax & Data SaaS',
   description: 'Simplify your tax reporting with Taxpond',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({
