@@ -2,7 +2,7 @@ import type { DuckDBConnection, QueryResult } from './types'
 
 export async function executeQuery<T extends Record<string, unknown> = Record<string, unknown>>(
   conn: DuckDBConnection,
-  sql: string,
+  sql: string
 ): Promise<QueryResult<T>> {
   const arrowTable = await conn.query(sql)
   const rows = arrowTable.toArray().map((row) => {
@@ -21,24 +21,15 @@ export async function executeQuery<T extends Record<string, unknown> = Record<st
   }
 }
 
-export async function getColumns(
-  conn: DuckDBConnection,
-  tableName: string,
-): Promise<string[]> {
-  const result = await executeQuery<{ column_name: string }>(
-    conn,
-    `DESCRIBE ${tableName}`,
-  )
+export async function getColumns(conn: DuckDBConnection, tableName: string): Promise<string[]> {
+  const result = await executeQuery<{ column_name: string }>(conn, `DESCRIBE ${tableName}`)
   return result.rows.map((r) => String(r.column_name))
 }
 
-export async function getRowCount(
-  conn: DuckDBConnection,
-  tableName: string,
-): Promise<number> {
+export async function getRowCount(conn: DuckDBConnection, tableName: string): Promise<number> {
   const result = await executeQuery<{ count: number }>(
     conn,
-    `SELECT COUNT(*) as count FROM ${tableName}`,
+    `SELECT COUNT(*) as count FROM ${tableName}`
   )
   return Number(result.rows[0]?.count ?? 0)
 }

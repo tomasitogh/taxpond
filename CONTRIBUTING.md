@@ -67,11 +67,11 @@ git push origin feat/add-colombia-nit-validator
 
 #### Branch Naming
 
-| Prefix  | Use Case          |
-| ------- | ----------------- |
-| `feat/` | New feature       |
-| `fix/`  | Bug fix           |
-| `docs/` | Documentation     |
+| Prefix  | Use Case            |
+| ------- | ------------------- |
+| `feat/` | New feature         |
+| `fix/`  | Bug fix             |
+| `docs/` | Documentation       |
 | `test/` | Adding/fixing tests |
 
 #### Commit Messages
@@ -120,14 +120,14 @@ This is the most common contribution. Here's a step-by-step guide:
 
 Look up the official format for the country's tax ID:
 
-| Country | ID     | Format                                                                 |
-| ------- | ------ | ---------------------------------------------------------------------- |
-| AR      | CUIT   | XX-XXXXXXXX-X (11 digits, check digit algorithm)                       |
-| BR      | CNPJ   | XX.XXX.XXX/XXXX-XX (14 digits, weighted sum)                           |
-| CL      | RUT    | X.XXX.XXX-X or XXXXXXXX-X (7-8 digits + check digit)                  |
-| MX      | RFC    | 4 letters + 6 digits (individuals) or 3 letters + 6 digits (companies) |
-| CO      | NIT    | X.XXX.XXX-X (9-10 digits with check digit)                             |
-| PE      | RUC    | 11 digits (same format as DNI)                                         |
+| Country | ID   | Format                                                                 |
+| ------- | ---- | ---------------------------------------------------------------------- |
+| AR      | CUIT | XX-XXXXXXXX-X (11 digits, check digit algorithm)                       |
+| BR      | CNPJ | XX.XXX.XXX/XXXX-XX (14 digits, weighted sum)                           |
+| CL      | RUT  | X.XXX.XXX-X or XXXXXXXX-X (7-8 digits + check digit)                   |
+| MX      | RFC  | 4 letters + 6 digits (individuals) or 3 letters + 6 digits (companies) |
+| CO      | NIT  | X.XXX.XXX-X (9-10 digits with check digit)                             |
+| PE      | RUC  | 11 digits (same format as DNI)                                         |
 
 ### Step 2: Create the Validator
 

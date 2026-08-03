@@ -19,7 +19,7 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
       const formatted = config.format(raw)
       setValue(formatted)
     },
-    [config],
+    [config]
   )
 
   const isValid = value.length > 0 && config.validate(value)
@@ -28,7 +28,7 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label htmlFor="tax-id-input" className="text-sm font-medium text-foreground">
+        <label htmlFor="tax-id-input" className="text-foreground text-sm font-medium">
           Enter {config.label}
         </label>
         <div className="relative">
@@ -38,10 +38,10 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
             placeholder={config.placeholder}
             value={value}
             onChange={handleChange}
-            className="pr-10 font-data"
+            className="font-data pr-10"
           />
           {hasValue && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div className="absolute top-1/2 right-3 -translate-y-1/2">
               {isValid ? (
                 <CheckCircle2 className="h-5 w-5 text-emerald-500" />
               ) : (
@@ -67,9 +67,7 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
           )}
           <span
             className={`text-sm font-medium ${
-              isValid
-                ? 'text-emerald-700 dark:text-emerald-300'
-                : 'text-red-700 dark:text-red-300'
+              isValid ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'
             }`}
           >
             {isValid ? 'Valid check digit' : 'Invalid check digit'}
@@ -77,7 +75,7 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
         </div>
       )}
 
-      <p className="text-xs text-muted-foreground">
+      <p className="text-muted-foreground text-xs">
         Example: <span className="font-data">{config.example}</span>
       </p>
     </div>

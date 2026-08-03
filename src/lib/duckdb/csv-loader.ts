@@ -1,16 +1,11 @@
-import type {
-  DuckDBInstance,
-  DuckDBConnection,
-  FileLoader,
-  FileLoaderResult,
-} from './types'
+import type { DuckDBInstance, DuckDBConnection, FileLoader, FileLoaderResult } from './types'
 import { getColumns, getRowCount } from './query'
 
 async function loadCSV(
   db: DuckDBInstance,
   conn: DuckDBConnection,
   file: File,
-  tableName: string = 'uploaded_data',
+  tableName: string = 'uploaded_data'
 ): Promise<FileLoaderResult> {
   const buffer = await file.arrayBuffer()
   const uint8 = new Uint8Array(buffer)

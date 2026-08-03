@@ -21,10 +21,7 @@ interface FileValidatorProps {
   onValidationComplete: (results: ValidationResults) => void
 }
 
-export function FileValidator({
-  selectedType,
-  onValidationComplete,
-}: FileValidatorProps) {
+export function FileValidator({ selectedType, onValidationComplete }: FileValidatorProps) {
   const { db, conn } = useDuckDB()
   const [file, setFile] = useState<File | null>(null)
   const [columns, setColumns] = useState<string[]>([])
@@ -55,7 +52,7 @@ export function FileValidator({
         setIsLoading(false)
       }
     },
-    [db, conn],
+    [db, conn]
   )
 
   const handleValidate = useCallback(async () => {
@@ -65,12 +62,7 @@ export function FileValidator({
     setError(null)
 
     try {
-      const result = await validateWithUDF(
-        conn,
-        'uploaded_data',
-        selectedColumn,
-        config.validate,
-      )
+      const result = await validateWithUDF(conn, 'uploaded_data', selectedColumn, config.validate)
 
       onValidationComplete({
         total: result.rows.length,
@@ -89,41 +81,36 @@ export function FileValidator({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-foreground">
-          Upload file
-        </label>
+        <label className="text-foreground text-sm font-medium">Upload file</label>
         <div className="flex items-center gap-3">
           <label
-            className={`flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-4 py-2 text-sm transition-colors hover:border-muted-foreground/30 ${
-              file ? 'border-emerald-300 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-950' : ''
+            className={`border-border hover:border-muted-foreground/30 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-dashed px-4 py-2 text-sm transition-colors ${
+              file
+                ? 'border-emerald-300 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-950'
+                : ''
             }`}
           >
             {file ? (
               <FileText className="h-4 w-4 text-emerald-600" />
             ) : (
-              <Upload className="h-4 w-4 text-muted-foreground" />
+              <Upload className="text-muted-foreground h-4 w-4" />
             )}
-            <span className={file ? 'text-emerald-700 dark:text-emerald-300' : 'text-muted-foreground'}>
+            <span
+              className={file ? 'text-emerald-700 dark:text-emerald-300' : 'text-muted-foreground'}
+            >
               {file ? file.name : 'Choose CSV file'}
             </span>
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+            <input type="file" accept=".csv" onChange={handleFileChange} className="hidden" />
           </label>
           {file && (
-            <span className="text-xs text-muted-foreground">
-              {rowCount.toLocaleString()} rows
-            </span>
+            <span className="text-muted-foreground text-xs">{rowCount.toLocaleString()} rows</span>
           )}
         </div>
       </div>
 
       {columns.length > 0 && (
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-foreground">
+          <label className="text-foreground text-sm font-medium">
             Select column with {config.label}
           </label>
           <Select value={selectedColumn} onValueChange={(v) => setSelectedColumn(v ?? '')}>

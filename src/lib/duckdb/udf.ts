@@ -10,14 +10,16 @@ export async function validateWithUDF(
   conn: DuckDBConnection,
   tableName: string,
   columnName: string,
-  validator: (value: string) => boolean,
-): Promise<{ rows: Record<string, unknown>[]; validCount: number; errorCount: number; columns: string[] }> {
+  validator: (value: string) => boolean
+): Promise<{
+  rows: Record<string, unknown>[]
+  validCount: number
+  errorCount: number
+  columns: string[]
+}> {
   const columns = await getColumns(conn, tableName)
-  
-  const result = await executeQuery<Record<string, unknown>>(
-    conn,
-    `SELECT * FROM ${tableName}`,
-  )
+
+  const result = await executeQuery<Record<string, unknown>>(conn, `SELECT * FROM ${tableName}`)
 
   const rows = result.rows.map((row) => ({
     ...row,

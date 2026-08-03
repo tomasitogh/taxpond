@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 import { getDuckDB, getConnection } from './connection'
 import type { DuckDBInstance, DuckDBConnection } from './types'
 
@@ -42,16 +36,12 @@ export function DuckDBProvider({ children }: { children: ReactNode }) {
   if (!context) {
     return (
       <div className="flex items-center justify-center p-8">
-        <div className="text-sm text-muted-foreground">
-          Loading DuckDB...
-        </div>
+        <div className="text-muted-foreground text-sm">Loading DuckDB...</div>
       </div>
     )
   }
 
-  return (
-    <DuckDBContext.Provider value={context}>{children}</DuckDBContext.Provider>
-  )
+  return <DuckDBContext.Provider value={context}>{children}</DuckDBContext.Provider>
 }
 
 export function useDuckDB(): DuckDBContextValue {

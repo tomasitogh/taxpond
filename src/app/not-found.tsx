@@ -1,17 +1,13 @@
-import Link from "next/link"
+import Link from 'next/link'
 
 export default function NotFound() {
   return (
     <section className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 text-center">
-      <p className="font-data text-7xl font-bold tabular-nums text-foreground">
-        404
-      </p>
-      <h1 className="mt-4 text-2xl font-semibold tracking-tight text-foreground">
-        Page not found
-      </h1>
-      <p className="mt-3 max-w-md text-muted-foreground">
-        Sorry, the page you are looking for does not exist or has been moved.
-        If you believe this is an error, please contact our support team.
+      <p className="font-data text-foreground text-7xl font-bold tabular-nums">404</p>
+      <h1 className="text-foreground mt-4 text-2xl font-semibold tracking-tight">Page not found</h1>
+      <p className="text-muted-foreground mt-3 max-w-md">
+        Sorry, the page you are looking for does not exist or has been moved. If you believe this is
+        an error, please contact our support team.
       </p>
       <Link
         href="/"

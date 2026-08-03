@@ -1,38 +1,158 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Upload, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import * as React from 'react'
+import { Upload, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu'
 
-const MOCK_COLUMNS = ["Date", "Tax ID", "Description", "Amount", "Currency"]
+const MOCK_COLUMNS = ['Date', 'Tax ID', 'Description', 'Amount', 'Currency']
 
 const MOCK_DATA = [
-  { Date: "2025-01-15", "Tax ID": "20-12345678-3", Description: "Consultoría energetica", Amount: "125000.00", Currency: "ARS" },
-  { Date: "2025-01-16", "Tax ID": "20-87654321-9", Description: "Servicios de auditoria", Amount: "89500.50", Currency: "ARS" },
-  { Date: "2025-02-01", "Tax ID": "30-71234567-0", Description: "Licencia software", Amount: "45000.00", Currency: "USD" },
-  { Date: "2025-02-10", "Tax ID": "20-11111111-1", Description: "Honorarios directivos", Amount: "320000.00", Currency: "ARS" },
-  { Date: "2025-02-15", "Tax ID": "27-22222222-5", Description: "Reembolso gastos viaje", Amount: "78000.25", Currency: "ARS" },
-  { Date: "2025-03-01", "Tax ID": "30-33333333-7", Description: "Mantenimiento servers", Amount: "15000.00", Currency: "USD" },
-  { Date: "2025-03-05", "Tax ID": "20-44444444-2", Description: "Capacitación personal", Amount: "62000.00", Currency: "ARS" },
-  { Date: "2025-03-10", "Tax ID": "20-55555555-8", Description: "Seguro commercial", Amount: "98000.00", Currency: "ARS" },
-  { Date: "2025-03-15", "Tax ID": "30-66666666-4", Description: "Publicidad digital", Amount: "21000.75", Currency: "USD" },
-  { Date: "2025-04-01", "Tax ID": "20-77777777-0", Description: "Alquiler oficina", Amount: "185000.00", Currency: "ARS" },
-  { Date: "2025-04-05", "Tax ID": "20-88888888-6", Description: "Servicios legales", Amount: "145000.00", Currency: "ARS" },
-  { Date: "2025-04-10", "Tax ID": "30-99999999-1", Description: "Cloud hosting", Amount: "3200.00", Currency: "USD" },
-  { Date: "2025-04-15", "Tax ID": "20-10101010-3", Description: "Commissiones ventas", Amount: "275000.00", Currency: "ARS" },
-  { Date: "2025-05-01", "Tax ID": "20-20202020-7", Description: "Gastos bancarios", Amount: "4500.00", Currency: "ARS" },
-  { Date: "2025-05-05", "Tax ID": "30-30303030-2", Description: "Telecomunicaciones", Amount: "12000.00", Currency: "ARS" },
-  { Date: "2025-05-10", "Tax ID": "20-40404040-8", Description: "Mater prima importada", Amount: "58000.00", Currency: "USD" },
-  { Date: "2025-05-15", "Tax ID": "20-50505050-4", Description: "Transporte mercaderia", Amount: "33000.00", Currency: "ARS" },
-  { Date: "2025-06-01", "Tax ID": "30-60606060-0", Description: "Seguros varios", Amount: "41000.00", Currency: "ARS" },
-  { Date: "2025-06-05", "Tax ID": "20-70707070-6", Description: "Consultoria IT", Amount: "67000.50", Currency: "USD" },
-  { Date: "2025-06-10", "Tax ID": "20-80808080-2", Description: "Suministros oficina", Amount: "8900.00", Currency: "ARS" },
+  {
+    Date: '2025-01-15',
+    'Tax ID': '20-12345678-3',
+    Description: 'Consultoría energetica',
+    Amount: '125000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-01-16',
+    'Tax ID': '20-87654321-9',
+    Description: 'Servicios de auditoria',
+    Amount: '89500.50',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-02-01',
+    'Tax ID': '30-71234567-0',
+    Description: 'Licencia software',
+    Amount: '45000.00',
+    Currency: 'USD',
+  },
+  {
+    Date: '2025-02-10',
+    'Tax ID': '20-11111111-1',
+    Description: 'Honorarios directivos',
+    Amount: '320000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-02-15',
+    'Tax ID': '27-22222222-5',
+    Description: 'Reembolso gastos viaje',
+    Amount: '78000.25',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-03-01',
+    'Tax ID': '30-33333333-7',
+    Description: 'Mantenimiento servers',
+    Amount: '15000.00',
+    Currency: 'USD',
+  },
+  {
+    Date: '2025-03-05',
+    'Tax ID': '20-44444444-2',
+    Description: 'Capacitación personal',
+    Amount: '62000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-03-10',
+    'Tax ID': '20-55555555-8',
+    Description: 'Seguro commercial',
+    Amount: '98000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-03-15',
+    'Tax ID': '30-66666666-4',
+    Description: 'Publicidad digital',
+    Amount: '21000.75',
+    Currency: 'USD',
+  },
+  {
+    Date: '2025-04-01',
+    'Tax ID': '20-77777777-0',
+    Description: 'Alquiler oficina',
+    Amount: '185000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-04-05',
+    'Tax ID': '20-88888888-6',
+    Description: 'Servicios legales',
+    Amount: '145000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-04-10',
+    'Tax ID': '30-99999999-1',
+    Description: 'Cloud hosting',
+    Amount: '3200.00',
+    Currency: 'USD',
+  },
+  {
+    Date: '2025-04-15',
+    'Tax ID': '20-10101010-3',
+    Description: 'Commissiones ventas',
+    Amount: '275000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-05-01',
+    'Tax ID': '20-20202020-7',
+    Description: 'Gastos bancarios',
+    Amount: '4500.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-05-05',
+    'Tax ID': '30-30303030-2',
+    Description: 'Telecomunicaciones',
+    Amount: '12000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-05-10',
+    'Tax ID': '20-40404040-8',
+    Description: 'Mater prima importada',
+    Amount: '58000.00',
+    Currency: 'USD',
+  },
+  {
+    Date: '2025-05-15',
+    'Tax ID': '20-50505050-4',
+    Description: 'Transporte mercaderia',
+    Amount: '33000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-06-01',
+    'Tax ID': '30-60606060-0',
+    Description: 'Seguros varios',
+    Amount: '41000.00',
+    Currency: 'ARS',
+  },
+  {
+    Date: '2025-06-05',
+    'Tax ID': '20-70707070-6',
+    Description: 'Consultoria IT',
+    Amount: '67000.50',
+    Currency: 'USD',
+  },
+  {
+    Date: '2025-06-10',
+    'Tax ID': '20-80808080-2',
+    Description: 'Suministros oficina',
+    Amount: '8900.00',
+    Currency: 'ARS',
+  },
 ]
 
 const ROWS_PER_PAGE = 10
@@ -59,7 +179,7 @@ export default function TaxProcessorTryPage() {
 
   function handleApplyQuery() {
     // Mock: in real implementation, this would build and execute a DuckDB SQL query
-    console.log("Apply query with:", { columnFilters, columnGroupBys })
+    console.log('Apply query with:', { columnFilters, columnGroupBys })
   }
 
   const uniqueValues = (col: string) => {
@@ -71,10 +191,10 @@ export default function TaxProcessorTryPage() {
     <div className="mx-auto max-w-6xl px-6 py-12">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+        <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
           Start uploading your report.
         </h1>
-        <p className="mt-4 text-lg text-muted-foreground sm:text-1xl">
+        <p className="text-muted-foreground sm:text-1xl mt-4 text-lg">
           Remember, this data IS NOT being shared with anyone, this runs in your computer.
         </p>
       </div>
@@ -97,8 +217,8 @@ export default function TaxProcessorTryPage() {
           }}
           className={`flex w-72 items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-4 text-sm font-medium transition-colors ${
             isDragOver
-              ? "border-[#FFD600] bg-[#FFD600]/5 text-foreground"
-              : "border-border bg-card text-muted-foreground hover:border-muted-foreground/30"
+              ? 'text-foreground border-[#FFD600] bg-[#FFD600]/5'
+              : 'border-border bg-card text-muted-foreground hover:border-muted-foreground/30'
           }`}
         >
           Upload file
@@ -113,13 +233,11 @@ export default function TaxProcessorTryPage() {
           <div className="flex flex-1 gap-3 overflow-x-auto">
             {MOCK_COLUMNS.map((col) => (
               <div key={col} className="flex min-w-[140px] flex-col gap-1">
-                <span className="text-xs font-medium text-muted-foreground">
-                  {col}
-                </span>
+                <span className="text-muted-foreground text-xs font-medium">{col}</span>
                 <div className="flex gap-1">
                   {/* Filter by */}
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="inline-flex h-7 items-center gap-1 rounded-md border border-border bg-transparent px-2 text-xs font-medium text-foreground hover:bg-accent">
+                    <DropdownMenuTrigger className="border-border text-foreground hover:bg-accent inline-flex h-7 items-center gap-1 rounded-md border bg-transparent px-2 text-xs font-medium">
                       Filter by
                       <ChevronDown className="h-3 w-3" />
                     </DropdownMenuTrigger>
@@ -128,10 +246,7 @@ export default function TaxProcessorTryPage() {
                         All
                       </DropdownMenuItem>
                       {uniqueValues(col).map((val) => (
-                        <DropdownMenuItem
-                          key={val}
-                          onClick={() => handleFilterSelect(col, val)}
-                        >
+                        <DropdownMenuItem key={val} onClick={() => handleFilterSelect(col, val)}>
                           {val}
                         </DropdownMenuItem>
                       ))}
@@ -140,7 +255,7 @@ export default function TaxProcessorTryPage() {
 
                   {/* Group by */}
                   <Button
-                    variant={columnGroupBys[col] ? "default" : "outline"}
+                    variant={columnGroupBys[col] ? 'default' : 'outline'}
                     size="sm"
                     className="h-7 gap-1 text-xs"
                     onClick={() => handleGroupByToggle(col)}
@@ -156,7 +271,7 @@ export default function TaxProcessorTryPage() {
           {/* Apply Query Button */}
           <Button
             onClick={handleApplyQuery}
-            className="shrink-0 bg-[#FFD600] text-foreground hover:bg-[#FFD600]/90"
+            className="text-foreground shrink-0 bg-[#FFD600] hover:bg-[#FFD600]/90"
           >
             Apply query
           </Button>
@@ -164,15 +279,15 @@ export default function TaxProcessorTryPage() {
       </div>
 
       {/* Data Table */}
-      <div className="mt-6 overflow-hidden rounded-xl border border-border">
+      <div className="border-border mt-6 overflow-hidden rounded-xl border">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/50">
+              <tr className="border-border bg-muted/50 border-b">
                 {MOCK_COLUMNS.map((col) => (
                   <th
                     key={col}
-                    className="px-4 py-3 text-left text-xs font-medium text-muted-foreground"
+                    className="text-muted-foreground px-4 py-3 text-left text-xs font-medium"
                   >
                     {col}
                   </th>
@@ -181,12 +296,9 @@ export default function TaxProcessorTryPage() {
             </thead>
             <tbody>
               {paginatedData.map((row, i) => (
-                <tr
-                  key={i}
-                  className="border-b border-border last:border-0 hover:bg-muted/30"
-                >
+                <tr key={i} className="border-border hover:bg-muted/30 border-b last:border-0">
                   {MOCK_COLUMNS.map((col) => (
-                    <td key={col} className="px-4 py-3 text-foreground">
+                    <td key={col} className="text-foreground px-4 py-3">
                       {row[col as keyof typeof row]}
                     </td>
                   ))}
@@ -197,11 +309,10 @@ export default function TaxProcessorTryPage() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between border-t border-border px-4 py-3">
-          <p className="text-xs text-muted-foreground">
+        <div className="border-border flex items-center justify-between border-t px-4 py-3">
+          <p className="text-muted-foreground text-xs">
             Showing {(currentPage - 1) * ROWS_PER_PAGE + 1}-
-            {Math.min(currentPage * ROWS_PER_PAGE, MOCK_DATA.length)} of{" "}
-            {MOCK_DATA.length} rows
+            {Math.min(currentPage * ROWS_PER_PAGE, MOCK_DATA.length)} of {MOCK_DATA.length} rows
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -216,7 +327,7 @@ export default function TaxProcessorTryPage() {
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <Button
                 key={page}
-                variant={page === currentPage ? "default" : "outline"}
+                variant={page === currentPage ? 'default' : 'outline'}
                 size="sm"
                 className="h-7 w-7 p-0 text-xs"
                 onClick={() => setCurrentPage(page)}

@@ -69,13 +69,13 @@ function _parseSharedStrings(xml: string): SharedStrings {
  * Parse xl/worksheets/sheet1.xml to extract cell data.
  * Cells reference the shared string table by index.
  */
-function _parseSheetData(
-  xml: string,
-  sharedStrings: SharedStrings,
-): SheetData {
+function _parseSheetData(xml: string, sharedStrings: SharedStrings): SheetData {
   const cells: Cell[] = []
   const rowRegex = new RegExp('<row[^>]*>([\\s\\S]*?)<\\/row>', 'g')
-  const cellRegex = new RegExp('<c[^>]*r="([A-Z]+\\d+)"[^>]*(?:t="([^"]*)")?[^>]*>(?:<v>([\\s\\S]*?)<\\/v>)?<\\/c>', 'g')
+  const cellRegex = new RegExp(
+    '<c[^>]*r="([A-Z]+\\d+)"[^>]*(?:t="([^"]*)")?[^>]*>(?:<v>([\\s\\S]*?)<\\/v>)?<\\/c>',
+    'g'
+  )
 
   let maxRow = 0
   let maxCol = 0
@@ -170,7 +170,7 @@ async function loadXLSX(
   _db: DuckDBInstance,
   _conn: DuckDBConnection,
   _file: File,
-  _tableName: string = 'uploaded_data',
+  _tableName: string = 'uploaded_data'
 ): Promise<FileLoaderResult> {
   // Step 1: Read file
   // const buffer = await _file.arrayBuffer()
@@ -196,7 +196,7 @@ async function loadXLSX(
   // return loadCSVFromContent(_conn, csv, _tableName)
 
   throw new Error(
-    'XLSX loader not yet implemented. See src/lib/duckdb/xlsx-loader.mock.ts for reference.',
+    'XLSX loader not yet implemented. See src/lib/duckdb/xlsx-loader.mock.ts for reference.'
   )
 }
 

@@ -23,6 +23,6 @@ export interface FileLoader {
     db: DuckDBInstance,
     conn: DuckDBConnection,
     file: File,
-    tableName?: string,
+    tableName?: string
   ) => Promise<FileLoaderResult>
 }

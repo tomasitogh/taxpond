@@ -7,9 +7,7 @@ import type {
 } from './types'
 import { csvLoader } from './csv-loader'
 
-const loaders = new Map<FileExtension, FileLoader>([
-  ['.csv', csvLoader],
-])
+const loaders = new Map<FileExtension, FileLoader>([['.csv', csvLoader]])
 
 export function registerFileLoader(loader: FileLoader): void {
   loaders.set(loader.extension, loader)
@@ -38,14 +36,14 @@ export async function loadFile(
   db: DuckDBInstance,
   conn: DuckDBConnection,
   file: File,
-  tableName?: string,
+  tableName?: string
 ): Promise<FileLoaderResult> {
   const ext = getFileExtension(file.name)
   const loader = loaders.get(ext)
 
   if (!loader) {
     throw new Error(
-      `Unsupported file format: ${ext}. Supported: ${getSupportedExtensions().join(', ')}`,
+      `Unsupported file format: ${ext}. Supported: ${getSupportedExtensions().join(', ')}`
     )
   }
 

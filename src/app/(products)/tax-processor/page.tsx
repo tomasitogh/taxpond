@@ -1,9 +1,8 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Upload, ArrowRight, FileText, CheckCircle2 } from "lucide-react"
-import Link from "next/link"
-
+import * as React from 'react'
+import { Upload, ArrowRight, FileText, CheckCircle2 } from 'lucide-react'
+import Link from 'next/link'
 
 export default function TaxProcessorPage() {
   const [isDragOver, setIsDragOver] = React.useState(false)
@@ -11,25 +10,19 @@ export default function TaxProcessorPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       {/* Page Header */}
-      <p className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
-        Product
-      </p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+      <p className="text-muted-foreground text-sm font-medium tracking-wider uppercase">Product</p>
+      <h1 className="text-foreground mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
         Tax Reports Processor
       </h1>
-      <p className="mt-3 max-w-lg text-muted-foreground">
-        Upload your financial data and instantly generate compliant tax
-        reports. Supports CSV, Excel, and PDF formats.
+      <p className="text-muted-foreground mt-3 max-w-lg">
+        Upload your financial data and instantly generate compliant tax reports. Supports CSV,
+        Excel, and PDF formats.
       </p>
 
       {/* Pipeline Section */}
-      <section className="mt-12 rounded-xl border border-border p-8">
-        <h2 className="text-lg font-semibold text-foreground">
-          How it works
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Three steps to your tax report
-        </p>
+      <section className="border-border mt-12 rounded-xl border p-8">
+        <h2 className="text-foreground text-lg font-semibold">How it works</h2>
+        <p className="text-muted-foreground mt-1 text-sm">Three steps to your tax report</p>
 
         <div className="mt-8 flex flex-col items-center gap-8 md:flex-row md:gap-12">
           {/* Step 1: Upload */}
@@ -46,102 +39,82 @@ export default function TaxProcessorPage() {
               }}
               className={`flex h-40 w-72 flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed transition-colors ${
                 isDragOver
-                  ? "border-[#FFD600] bg-[#FFD600]/5"
-                  : "border-border bg-card hover:border-muted-foreground/30"
+                  ? 'border-[#FFD600] bg-[#FFD600]/5'
+                  : 'border-border bg-card hover:border-muted-foreground/30'
               }`}
             >
-              <Upload className="h-8 w-8 text-muted-foreground" />
-              <span className="text-sm font-medium text-foreground">
-                Upload file
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Drag & drop or click
-              </span>
+              <Upload className="text-muted-foreground h-8 w-8" />
+              <span className="text-foreground text-sm font-medium">Upload file</span>
+              <span className="text-muted-foreground text-xs">Drag & drop or click</span>
             </button>
-            <span className="text-xs text-muted-foreground">
-              Step 1 — Upload
-            </span>
+            <span className="text-muted-foreground text-xs">Step 1 — Upload</span>
           </div>
 
           {/* Arrow */}
-          <ArrowRight className="h-10 w-10 shrink-0 text-muted-foreground" />
+          <ArrowRight className="text-muted-foreground h-10 w-10 shrink-0" />
 
           {/* Step 2: Table Preview */}
           <div className="flex flex-col items-center gap-3">
-            <div className="h-40 w-72 overflow-hidden rounded-xl border border-border bg-card p-3">
-              <div className="flex items-center gap-2 border-b border-border pb-2">
-                <div className="h-3 w-3 rounded border border-border" />
-                <span className="text-[10px] font-medium text-muted-foreground">
-                  Tax Id
-                </span>
-                <span className="text-[10px] font-medium text-muted-foreground">
-                  Amount
-                </span>
+            <div className="border-border bg-card h-40 w-72 overflow-hidden rounded-xl border p-3">
+              <div className="border-border flex items-center gap-2 border-b pb-2">
+                <div className="border-border h-3 w-3 rounded border" />
+                <span className="text-muted-foreground text-[10px] font-medium">Tax Id</span>
+                <span className="text-muted-foreground text-[10px] font-medium">Amount</span>
               </div>
               <div className="mt-2 space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded border border-border" />
-                  <span className="text-[10px] text-foreground">AEFR43</span>
-                  <span className="text-[10px] text-foreground">$32M</span>
+                  <div className="border-border h-3 w-3 rounded border" />
+                  <span className="text-foreground text-[10px]">AEFR43</span>
+                  <span className="text-foreground text-[10px]">$32M</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded border border-border" />
-                  <span className="text-[10px] text-foreground">ADS2213</span>
-                  <span className="text-[10px] text-foreground">$18M</span>
+                  <div className="border-border h-3 w-3 rounded border" />
+                  <span className="text-foreground text-[10px]">ADS2213</span>
+                  <span className="text-foreground text-[10px]">$18M</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded border border-border" />
-                  <span className="text-[10px] text-foreground">ASDAS33</span>
-                  <span className="text-[10px] text-foreground">$5M</span>
+                  <div className="border-border h-3 w-3 rounded border" />
+                  <span className="text-foreground text-[10px]">ASDAS33</span>
+                  <span className="text-foreground text-[10px]">$5M</span>
                 </div>
               </div>
             </div>
-            <span className="text-xs text-muted-foreground">
-              Step 2 — Visualize
-            </span>
+            <span className="text-muted-foreground text-xs">Step 2 — Visualize</span>
           </div>
         </div>
       </section>
 
       {/* Recent Reports */}
-      <section className="mt-8 rounded-xl border border-border p-8">
-        <h2 className="text-lg font-semibold text-foreground">
-          Recent reports
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Your latest generated tax reports
-        </p>
+      <section className="border-border mt-8 rounded-xl border p-8">
+        <h2 className="text-foreground text-lg font-semibold">Recent reports</h2>
+        <p className="text-muted-foreground mt-1 text-sm">Your latest generated tax reports</p>
         <div className="mt-6 space-y-3">
           {[
             {
-              name: "Q2_2025_Tax_Report.pdf",
-              date: "Jul 15, 2025",
-              status: "Completed",
+              name: 'Q2_2025_Tax_Report.pdf',
+              date: 'Jul 15, 2025',
+              status: 'Completed',
             },
             {
-              name: "Annual_Summary_2024.xlsx",
-              date: "Jan 10, 2025",
-              status: "Completed",
+              name: 'Annual_Summary_2024.xlsx',
+              date: 'Jan 10, 2025',
+              status: 'Completed',
             },
             {
-              name: "Q1_2025_VAT_Return.csv",
-              date: "Apr 5, 2025",
-              status: "Completed",
+              name: 'Q1_2025_VAT_Return.csv',
+              date: 'Apr 5, 2025',
+              status: 'Completed',
             },
           ].map((report) => (
             <div
               key={report.name}
-              className="flex items-center justify-between rounded-lg border border-border p-4"
+              className="border-border flex items-center justify-between rounded-lg border p-4"
             >
               <div className="flex items-center gap-3">
-                <FileText className="h-5 w-5 text-muted-foreground" />
+                <FileText className="text-muted-foreground h-5 w-5" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">
-                    {report.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {report.date}
-                  </p>
+                  <p className="text-foreground text-sm font-medium">{report.name}</p>
+                  <p className="text-muted-foreground text-xs">{report.date}</p>
                 </div>
               </div>
               <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
@@ -154,36 +127,32 @@ export default function TaxProcessorPage() {
       </section>
 
       {/* Supported Formats */}
-      <section className="mt-8 rounded-xl border border-border p-8">
-        <h2 className="text-lg font-semibold text-foreground">
-          Supported formats
-        </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <section className="border-border mt-8 rounded-xl border p-8">
+        <h2 className="text-foreground text-lg font-semibold">Supported formats</h2>
+        <p className="text-muted-foreground mt-1 text-sm">
           We accept the most common financial data formats
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          {["CSV", "XLSX", "XLS", "PDF", "OFX", "QIF"].map((fmt) => (
+          {['CSV', 'XLSX', 'XLS', 'PDF', 'OFX', 'QIF'].map((fmt) => (
             <span
               key={fmt}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-foreground"
+              className="border-border text-foreground inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium"
             >
-              <FileText className="h-3 w-3 text-muted-foreground" />
+              <FileText className="text-muted-foreground h-3 w-3" />
               {fmt}
             </span>
           ))}
         </div>
       </section>
 
-
-
       {/* Try out */}
       <section className="flex min-h-[calc(60vh-4rem)] flex-col items-center justify-center text-center">
-        <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-6xl">
+        <h1 className="text-foreground text-4xl font-semibold tracking-tight sm:text-6xl">
           Try now,
           <br />
           for <span className="text-green">free</span>.
         </h1>
-        <p className="mt-6 max-w-md text-lg text-muted-foreground">
+        <p className="text-muted-foreground mt-6 max-w-md text-lg">
           Upload any data, see how it works. You&apos;ll like it.
         </p>
         <div className="mt-8 flex gap-3">
@@ -196,7 +165,7 @@ export default function TaxProcessorPage() {
           </Link>
           <Link
             href="/company"
-            className="inline-flex items-center rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className="border-border text-foreground hover:bg-muted inline-flex items-center rounded-full border px-5 py-2.5 text-sm font-medium transition-colors"
           >
             About us
           </Link>

@@ -17,19 +17,13 @@ import type { ValidationResults as ValidationResultsType } from './validation-re
 
 export function TaxIdValidator() {
   const [selectedType, setSelectedType] = useState<TaxIdType>('AR_CUIT')
-  const [validationResults, setValidationResults] =
-    useState<ValidationResultsType | null>(null)
+  const [validationResults, setValidationResults] = useState<ValidationResultsType | null>(null)
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-foreground">
-          Country / Tax ID Type
-        </label>
-        <Select
-          value={selectedType}
-          onValueChange={(v) => setSelectedType(v as TaxIdType)}
-        >
+        <label className="text-foreground text-sm font-medium">Country / Tax ID Type</label>
+        <Select value={selectedType} onValueChange={(v) => setSelectedType(v as TaxIdType)}>
           <SelectTrigger className="w-full max-w-xs">
             <SelectValue />
           </SelectTrigger>
@@ -50,13 +44,13 @@ export function TaxIdValidator() {
         </TabsList>
 
         <TabsContent value="single">
-          <div className="rounded-xl border border-border p-6">
+          <div className="border-border rounded-xl border p-6">
             <SingleValidator selectedType={selectedType} />
           </div>
         </TabsContent>
 
         <TabsContent value="file">
-          <div className="rounded-xl border border-border p-6">
+          <div className="border-border rounded-xl border p-6">
             <FileValidator
               selectedType={selectedType}
               onValidationComplete={setValidationResults}

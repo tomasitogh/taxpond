@@ -51,20 +51,20 @@ export function ValidationResults({ results }: ValidationResultsProps) {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-border p-4 text-center">
-          <p className="text-2xl font-bold font-data text-foreground">
+        <div className="border-border rounded-xl border p-4 text-center">
+          <p className="font-data text-foreground text-2xl font-bold">
             {results.total.toLocaleString()}
           </p>
-          <p className="text-sm text-muted-foreground">Total rows</p>
+          <p className="text-muted-foreground text-sm">Total rows</p>
         </div>
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center dark:border-emerald-800 dark:bg-emerald-950">
-          <p className="text-2xl font-bold font-data text-emerald-600 dark:text-emerald-400">
+          <p className="font-data text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {results.valid.toLocaleString()}
           </p>
           <p className="text-sm text-emerald-700 dark:text-emerald-300">Valid</p>
         </div>
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-center dark:border-red-800 dark:bg-red-950">
-          <p className="text-2xl font-bold font-data text-red-600 dark:text-red-400">
+          <p className="font-data text-2xl font-bold text-red-600 dark:text-red-400">
             {results.errors.toLocaleString()}
           </p>
           <p className="text-sm text-red-700 dark:text-red-300">Invalid</p>
@@ -93,40 +93,35 @@ export function ValidationResults({ results }: ValidationResultsProps) {
           </Button>
         </div>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleExportCSV}
-          className="rounded-full"
-        >
+        <Button variant="outline" size="sm" onClick={handleExportCSV} className="rounded-full">
           <Download className="mr-1 h-3 w-3" />
           Export CSV
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="border-border overflow-hidden rounded-xl border">
         <div className="max-h-[400px] overflow-auto">
           <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-muted">
+            <thead className="bg-muted sticky top-0">
               <tr>
                 {results.columns.map((col) => (
                   <th
                     key={col}
-                    className="border-b border-border px-3 py-2 text-left font-medium text-muted-foreground"
+                    className="border-border text-muted-foreground border-b px-3 py-2 text-left font-medium"
                   >
                     {col}
                   </th>
                 ))}
-                <th className="border-b border-border px-3 py-2 text-left font-medium text-muted-foreground">
+                <th className="border-border text-muted-foreground border-b px-3 py-2 text-left font-medium">
                   Status
                 </th>
               </tr>
             </thead>
             <tbody>
               {displayData.slice(0, 100).map((row, i) => (
-                <tr key={i} className="border-b border-border last:border-0">
+                <tr key={i} className="border-border border-b last:border-0">
                   {results.columns.map((col) => (
-                    <td key={col} className="px-3 py-2 font-data">
+                    <td key={col} className="font-data px-3 py-2">
                       {String(row[col] ?? '')}
                     </td>
                   ))}
@@ -149,7 +144,7 @@ export function ValidationResults({ results }: ValidationResultsProps) {
           </table>
         </div>
         {displayData.length > 100 && (
-          <div className="border-t border-border bg-muted px-3 py-2 text-center text-xs text-muted-foreground">
+          <div className="border-border bg-muted text-muted-foreground border-t px-3 py-2 text-center text-xs">
             Showing 100 of {displayData.length.toLocaleString()} rows
           </div>
         )}
