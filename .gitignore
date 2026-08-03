@@ -48,3 +48,9 @@ next-env.d.ts
 .agents/skills/teach/MISSION.md
 .agents/skills/teach/RESOURCES.md
 .agents/skills/teach/NOTES.md
+.agents/skills/teach/agents/openai.yaml
+.agents/skills/teach/GLOSSARY-FORMAT.md
+.agents/skills/teach/LEARNING-RECORD-FORMAT.md
+.agents/skills/teach/MISSION-FORMAT.md
+.agents/skills/teach/RESOURCES-FORMAT.md
+.agents/skills/teach/SKILL.md
