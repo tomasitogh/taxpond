@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# teach workspace (generated lessons, references, learning records)
+.agents/skills/teach/reference/
+.agents/skills/teach/lessons/
+.agents/skills/teach/learning-records/
+.agents/skills/teach/assets/
+.agents/skills/teach/MISSION.md
+.agents/skills/teach/RESOURCES.md
+.agents/skills/teach/NOTES.md
