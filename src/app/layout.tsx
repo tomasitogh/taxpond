@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
+import { LanguageProvider } from '@/lib/i18n/context'
 import { Navbar } from '@/components/navbar'
 import './globals.css'
 
@@ -39,8 +40,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <main className="flex-1">{children}</main>
+          <LanguageProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
