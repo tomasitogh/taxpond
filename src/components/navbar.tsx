@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import Link from "next/link"
-import { useTheme } from "next-themes"
+import * as React from 'react'
+import Link from 'next/link'
+import { useTheme } from 'next-themes'
 import {
   Globe,
   Sun,
@@ -15,18 +15,19 @@ import {
   ArrowRight,
   Sparkles,
   FileSearch,
+  Check,
   type LucideIcon,
-} from "lucide-react"
+} from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu'
 
 type ProductBadge = {
   label: string
-  color: "purple" | "green" | "yellow" | "black"
+  color: 'purple' | 'green' | 'yellow' | 'black'
 }
 
 type Product = {
@@ -38,49 +39,54 @@ type Product = {
 
 const PRODUCTS: Product[] = [
   {
-    title: "Tax reports processor",
-    href: "/tax-processor",
+    title: 'Tax reports processor',
+    href: '/tax-processor',
     icon: BarChart3,
-    badge: { label: "Try for free!", color: "green" },
+    badge: { label: 'Try for free!', color: 'green' },
   },
   {
-    title: "AI Conciliation",
-    href: "/conciliation",
+    title: 'Tax IDs validatior',
+    href: '/tax-id-validator',
+    icon: Check,
+    badge: { label: 'Try for free!', color: 'green' },
+  },
+  {
+    title: 'AI Conciliation',
+    href: '/conciliation',
     icon: Sparkles,
-    badge: { label: "AI Powered", color: "purple" },
+    badge: { label: 'AI Powered', color: 'purple' },
   },
   {
-    title: "Smart Audits",
-    href: "/audits",
+    title: 'Smart Audits',
+    href: '/audits',
     icon: FileSearch,
-    badge: { label: "Dont miss more revenue!", color: "black"},
+    badge: { label: 'Dont miss more revenue!', color: 'black' },
   },
   {
-    title: "Tax Calendar",
-    href: "/calendar",
+    title: 'Tax Calendar',
+    href: '/calendar',
     icon: BarChart3,
-    badge: { label: "Try for free!", color: "green" },
+    badge: { label: 'Try for free!', color: 'green' },
   },
 ]
 
-const BADGE_STYLES: Record<ProductBadge["color"], { bg: string; text: string }> = {
+const BADGE_STYLES: Record<ProductBadge['color'], { bg: string; text: string }> = {
   green: {
-    bg: "bg-green-light",
-    text: "text-green",
+    bg: 'bg-green-light',
+    text: 'text-green',
   },
   purple: {
-    bg: "bg-purple-light",
-    text: "text-purple",
+    bg: 'bg-purple-light',
+    text: 'text-purple',
   },
   yellow: {
-    bg: "bg-yellow/10",
-    text: "text-yellow",
+    bg: 'bg-yellow/10',
+    text: 'text-yellow',
   },
   black: {
-    bg: "bg-yellow/10",
-    text: "text-black",
-  }
-
+    bg: 'bg-yellow/10',
+    text: 'text-black',
+  },
 }
 
 export function Navbar() {
@@ -89,7 +95,7 @@ export function Navbar() {
   const [productsOpen, setProductsOpen] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [mobileProductsOpen, setMobileProductsOpen] = React.useState(false)
-  const [lang, setLang] = React.useState<"EN" | "ES">("EN")
+  const [lang, setLang] = React.useState<'EN' | 'ES'>('EN')
   const productsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
   React.useEffect(() => {
@@ -107,7 +113,7 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+    <header className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -125,15 +131,15 @@ export function Navbar() {
             onMouseEnter={handleProductsEnter}
             onMouseLeave={handleProductsLeave}
           >
-            <button className="flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+            <button className="text-foreground hover:bg-muted flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors">
               Products
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+              <ChevronDown className="text-muted-foreground h-3.5 w-3.5" />
             </button>
 
             {/* Products Dropdown Modal */}
             {productsOpen && (
               <div
-                className="absolute left-1/2 top-full z-50 mt-2 w-80 -translate-x-1/2 rounded-xl border border-border bg-popover p-2 shadow-lg"
+                className="border-border bg-popover absolute top-full left-1/2 z-50 mt-2 w-80 -translate-x-1/2 rounded-xl border p-2 shadow-lg"
                 onMouseEnter={handleProductsEnter}
                 onMouseLeave={handleProductsLeave}
               >
@@ -144,7 +150,7 @@ export function Navbar() {
                     <Link
                       key={product.href}
                       href={product.href}
-                      className="group flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-accent"
+                      className="group hover:bg-accent flex items-center gap-3 rounded-lg p-3 transition-colors"
                       onClick={() => setProductsOpen(false)}
                     >
                       <div
@@ -153,14 +159,10 @@ export function Navbar() {
                         <Icon className={`h-5 w-5 ${styles.text}`} />
                       </div>
                       <div className="flex-1">
-                        <div className="text-sm font-medium text-foreground">
-                          {product.title}
-                        </div>
-                        <div className={`text-xs ${styles.text}`}>
-                          {product.badge.label}
-                        </div>
+                        <div className="text-foreground text-sm font-medium">{product.title}</div>
+                        <div className={`text-xs ${styles.text}`}>{product.badge.label}</div>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                      <ArrowRight className="text-muted-foreground h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                     </Link>
                   )
                 })}
@@ -171,7 +173,7 @@ export function Navbar() {
           {/* Company Link */}
           <Link
             href="/company"
-            className="rounded-full px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            className="text-foreground hover:bg-muted rounded-full px-4 py-2 text-sm font-medium transition-colors"
           >
             Company
           </Link>
@@ -181,29 +183,29 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           {/* Language Selector */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+            <DropdownMenuTrigger className="border-border text-foreground hover:bg-muted flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors">
               <Globe className="h-4 w-4" />
               <span>{lang}</span>
-              <ChevronDown className="h-3 w-3 text-muted-foreground" />
+              <ChevronDown className="text-muted-foreground h-3 w-3" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-32">
-              <DropdownMenuItem onClick={() => setLang("EN")}>
-                <span className={lang === "EN" ? "font-medium" : ""}>EN</span>
+              <DropdownMenuItem onClick={() => setLang('EN')}>
+                <span className={lang === 'EN' ? 'font-medium' : ''}>EN</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setLang("ES")}>
-                <span className={lang === "ES" ? "font-medium" : ""}>ES</span>
+              <DropdownMenuItem onClick={() => setLang('ES')}>
+                <span className={lang === 'ES' ? 'font-medium' : ''}>ES</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {/* Theme Toggle */}
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="border-border text-foreground hover:bg-muted flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
             aria-label="Toggle theme"
           >
             {mounted ? (
-              theme === "dark" ? (
+              theme === 'dark' ? (
                 <Sun className="h-4 w-4" />
               ) : (
                 <Moon className="h-4 w-4" />
@@ -216,7 +218,7 @@ export function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-foreground transition-colors hover:bg-muted md:hidden"
+            className="border-border text-foreground hover:bg-muted flex h-9 w-9 items-center justify-center rounded-full border transition-colors md:hidden"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
@@ -226,18 +228,18 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="border-t border-border bg-background/95 backdrop-blur-md md:hidden">
+        <div className="border-border bg-background/95 border-t backdrop-blur-md md:hidden">
           <nav className="mx-auto max-w-7xl px-6 py-4">
             {/* Products Section */}
             <div>
               <button
                 onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                className="text-foreground hover:bg-muted flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
               >
                 Products
                 <ChevronRight
-                  className={`h-4 w-4 text-muted-foreground transition-transform ${
-                    mobileProductsOpen ? "rotate-90" : ""
+                  className={`text-muted-foreground h-4 w-4 transition-transform ${
+                    mobileProductsOpen ? 'rotate-90' : ''
                   }`}
                 />
               </button>
@@ -250,7 +252,7 @@ export function Navbar() {
                       <Link
                         key={product.href}
                         href={product.href}
-                        className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-accent"
+                        className="hover:bg-accent flex items-center gap-3 rounded-lg p-3 transition-colors"
                         onClick={() => {
                           setMobileMenuOpen(false)
                           setMobileProductsOpen(false)
@@ -262,12 +264,8 @@ export function Navbar() {
                           <Icon className={`h-4 w-4 ${styles.text}`} />
                         </div>
                         <div className="flex-1">
-                          <div className="text-sm font-medium text-foreground">
-                            {product.title}
-                          </div>
-                          <div className={`text-xs ${styles.text}`}>
-                            {product.badge.label}
-                          </div>
+                          <div className="text-foreground text-sm font-medium">{product.title}</div>
+                          <div className={`text-xs ${styles.text}`}>{product.badge.label}</div>
                         </div>
                       </Link>
                     )
@@ -279,7 +277,7 @@ export function Navbar() {
             {/* Company Link */}
             <Link
               href="/company"
-              className="mt-1 block rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              className="text-foreground hover:bg-muted mt-1 block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Company

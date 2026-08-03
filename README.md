@@ -32,16 +32,16 @@ Tax compliance in LATAM is broken. Accountants and finance teams juggle spreadsh
 
 ## 🛠️ Tech Stack
 
-| Layer            | Technology                                      |
-| ---------------- | ----------------------------------------------- |
-| Framework        | [Next.js](https://nextjs.org/) 16+ (App Router) |
-| Language         | [TypeScript](https://www.typescriptlang.org/)   |
-| UI               | [Shadcn UI](https://ui.shadcn.com/) + Tailwind CSS |
-| Database Engine  | [DuckDB WASM](https://duckdb.org/docs/api/wasm) |
-| Package Manager  | [pnpm](https://pnpm.io/)                       |
-| Deployment       | [Vercel](https://vercel.com/)                   |
-| Testing          | [Vitest](https://vitest.dev/)                   |
-| Linting          | ESLint (flat config) + Prettier                 |
+| Layer           | Technology                                         |
+| --------------- | -------------------------------------------------- |
+| Framework       | [Next.js](https://nextjs.org/) 16+ (App Router)    |
+| Language        | [TypeScript](https://www.typescriptlang.org/)      |
+| UI              | [Shadcn UI](https://ui.shadcn.com/) + Tailwind CSS |
+| Database Engine | [DuckDB WASM](https://duckdb.org/docs/api/wasm)    |
+| Package Manager | [pnpm](https://pnpm.io/)                           |
+| Deployment      | [Vercel](https://vercel.com/)                      |
+| Testing         | [Vitest](https://vitest.dev/)                      |
+| Linting         | ESLint (flat config) + Prettier                    |
 
 ## 🏗️ Architecture
 
@@ -94,28 +94,28 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Available Scripts
 
-| Command               | Description                          |
-| --------------------- | ------------------------------------ |
-| `pnpm dev`            | Start development server             |
-| `pnpm build`          | Build for production                 |
-| `pnpm start`          | Start production server              |
-| `pnpm lint`           | Run ESLint                           |
-| `pnpm format:check`   | Check Prettier formatting            |
-| `pnpm type-check`     | TypeScript type checking             |
-| `pnpm test`           | Run test suite                       |
+| Command             | Description               |
+| ------------------- | ------------------------- |
+| `pnpm dev`          | Start development server  |
+| `pnpm build`        | Build for production      |
+| `pnpm start`        | Start production server   |
+| `pnpm lint`         | Run ESLint                |
+| `pnpm format:check` | Check Prettier formatting |
+| `pnpm type-check`   | TypeScript type checking  |
+| `pnpm test`         | Run test suite            |
 
 ## 📊 Benchmarks
 
 Measured on a mid-range laptop (Apple M1, 16GB RAM) via DuckDB WASM:
 
-| Operation                     | 100K rows | 1M rows  | 10M rows |
-| ----------------------------- | --------- | -------- | -------- |
-| `SELECT COUNT(*)`             | ~5ms      | ~25ms    | ~180ms   |
-| `GROUP BY` + `SUM`            | ~8ms      | ~45ms    | ~320ms   |
-| `JOIN` (2 tables)             | ~12ms     | ~80ms    | ~600ms   |
-| `ORDER BY` + `LIMIT`          | ~3ms      | ~15ms    | ~100ms   |
-| Tax ID Validation (regex)     | ~2ms      | ~10ms    | ~70ms    |
-| CSV Upload + Parse (100MB)    | ~1.2s     | —        | —        |
+| Operation                  | 100K rows | 1M rows | 10M rows |
+| -------------------------- | --------- | ------- | -------- |
+| `SELECT COUNT(*)`          | ~5ms      | ~25ms   | ~180ms   |
+| `GROUP BY` + `SUM`         | ~8ms      | ~45ms   | ~320ms   |
+| `JOIN` (2 tables)          | ~12ms     | ~80ms   | ~600ms   |
+| `ORDER BY` + `LIMIT`       | ~3ms      | ~15ms   | ~100ms   |
+| Tax ID Validation (regex)  | ~2ms      | ~10ms   | ~70ms    |
+| CSV Upload + Parse (100MB) | ~1.2s     | —       | —        |
 
 > _Replace with actual benchmarks once the WASM processing engine is implemented._
 

@@ -28,12 +28,14 @@
 El proyecto soporta modo claro y oscuro a través de clases `dark:` de Tailwind. Los modos se alternan con un toggle en la navbar.
 
 ### Light Mode
+
 - **Fondo principal:** Blanco puro (`bg-white`).
 - **Texto principal:** Negro (`text-black`).
 - **Bordes:** Gris claro (`border-gray-200` o similar).
 - **Botones de acción principal:** Amarillo (`bg-[#FFD600]`) con texto negro (`text-black`).
 
 ### Dark Mode
+
 - **Fondo principal:** Negro puro (`bg-black`).
 - **Texto principal:** Blanco (`text-white`).
 - **Bordes:** Gris oscuro (`border-gray-800` o similar).
@@ -47,11 +49,11 @@ Componente global usado en el layout de toda la aplicación.
 
 ### Estructura
 
-| Sección | Contenido | Comportamiento |
-|---------|-----------|----------------|
-| **Izquierda** | Logo "Taxpond" | Enlace al home (`/`). |
-| **Centro** | Links "Products" y "Company" | Al hacer hover sobre "Products", se despliega un dropdown modal centrado justo debajo de la navbar. |
-| **Derecha** | Selector de idioma (ES \| EN) + Toggle de modo oscuro/claro (icono Sun/Moon) | El toggle cambia la apariencia global de la app. |
+| Sección       | Contenido                                                                    | Comportamiento                                                                                      |
+| ------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Izquierda** | Logo "Taxpond"                                                               | Enlace al home (`/`).                                                                               |
+| **Centro**    | Links "Products" y "Company"                                                 | Al hacer hover sobre "Products", se despliega un dropdown modal centrado justo debajo de la navbar. |
+| **Derecha**   | Selector de idioma (ES \| EN) + Toggle de modo oscuro/claro (icono Sun/Moon) | El toggle cambia la apariencia global de la app.                                                    |
 
 ### Dropdown de "Products"
 

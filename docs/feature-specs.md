@@ -168,17 +168,21 @@ await db.query(`
 **Función completa propuesta**:
 
 ```typescript
-export async function loadCSV(db: Database, csvContent: string, tableName: string = 'uploaded_data') {
+export async function loadCSV(
+  db: Database,
+  csvContent: string,
+  tableName: string = 'uploaded_data'
+) {
   const encoder = new TextEncoder()
   const buffer = encoder.encode(csvContent)
-  
+
   db.registerFileBuffer(`${tableName}.csv`, buffer)
-  
+
   await db.query(`
     CREATE OR REPLACE VIEW ${tableName} AS 
     SELECT * FROM read_csv_auto('${tableName}.csv', header=true, sample_size=10000)
   `)
-  
+
   // Verificar que se cargó correctamente
   const countResult = await db.query(`SELECT COUNT(*) as total FROM ${tableName}`)
   const total = await countResult.toArray()
@@ -204,18 +208,18 @@ export async function loadCSV(db: Database, csvContent: string, tableName: strin
 
 ```typescript
 interface QueryOptions {
-  select?: string[]       // Columnas a mostrar
-  groupBy?: string[]      // Agrupar por
+  select?: string[] // Columnas a mostrar
+  groupBy?: string[] // Agrupar por
   aggregates?: { column: string; fn: 'SUM' | 'COUNT' | 'AVG' | 'MIN' | 'MAX' }[]
-  orderBy?: string        // Ordenar por
+  orderBy?: string // Ordenar por
   orderDirection?: 'ASC' | 'DESC'
-  where?: string          // Filtro WHERE
-  limit?: number          // Límite de filas
+  where?: string // Filtro WHERE
+  limit?: number // Límite de filas
 }
 
 export function buildQuery(tableName: string, options: QueryOptions): string {
   const parts: string[] = ['SELECT']
-  
+
   // SELECT clause
   const selectParts: string[] = []
   if (options.groupBy) {
@@ -230,30 +234,30 @@ export function buildQuery(tableName: string, options: QueryOptions): string {
     selectParts.push('*')
   }
   parts.push(selectParts.join(', '))
-  
+
   // FROM clause
   parts.push(`FROM ${tableName}`)
-  
+
   // WHERE clause
   if (options.where) {
     parts.push(`WHERE ${options.where}`)
   }
-  
+
   // GROUP BY clause
   if (options.groupBy && options.groupBy.length > 0) {
     parts.push(`GROUP BY ${options.groupBy.join(', ')}`)
   }
-  
+
   // ORDER BY clause
   if (options.orderBy) {
     parts.push(`ORDER BY ${options.orderBy} ${options.orderDirection || 'ASC'}`)
   }
-  
+
   // LIMIT clause
   if (options.limit) {
     parts.push(`LIMIT ${options.limit}`)
   }
-  
+
   return parts.join(' ')
 }
 ```
@@ -316,14 +320,14 @@ interface DataTableProps {
 
 export function DataTable({ columns, data }: DataTableProps) {
   const parentRef = useRef<HTMLDivElement>(null)
-  
+
   const virtualizer = useVirtualizer({
     count: data.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 35, // alto estimado por fila
     overscan: 20, // filas extra renderizadas fuera del viewport
   })
-  
+
   return (
     <div ref={parentRef} className="h-[600px] overflow-auto rounded-lg border">
       <div style={{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }}>
@@ -375,7 +379,7 @@ const [isLoading, setIsLoading] = useState(false)
 ```typescript
 function exportToCSV(data: Record<string, unknown>[], columns: string[]) {
   const header = columns.join(',')
-  const rows = data.map(row => columns.map(col => `"${String(row[col] ?? '')}"`).join(','))
+  const rows = data.map((row) => columns.map((col) => `"${String(row[col] ?? '')}"`).join(','))
   const csv = [header, ...rows].join('\n')
   const blob = new Blob([csv], { type: 'text/csv' })
   const url = URL.createObjectURL(blob)
@@ -415,105 +419,107 @@ Usuario                    Browser (React)              DuckDB-WASM (WASM en Mem
 
 ---
 
-## 2. Validador Masivo de Tax IDs
+## 2. Validador de Tax IDs (Individual + Masivo)
 
 ### Visión general
 
-DuckDB tiene una función nativa `regexp_matches()` que evalúa expresiones regulares en cada fila. Esta feature usa esa capacidad para validar masivamente CUITs (Argentina), RUTs (Chile/Uruguay), RUCs (Ecuador/Paraguay) o cualquier identificador fiscal con formato predefinido, y generar un reporte de errores en segundos.
+Feature dual: validación individual de tax IDs (solo TypeScript, respuesta instantánea) y validación masiva via DuckDB WASM con validación en JavaScript puro.
+
+**Decisión de arquitectura**: Se usa un approach híbrido: DuckDB WASM para cargar y manejar archivos CSV (ventajas: detección de tipos, manejo de encoding, queries SQL), y JavaScript puro para la validación (evita bugs conocidos de DuckDB's JavaScript UDFs con Emscripten). Las funciones de validación son las mismas para ambos modos.
 
 ### Dependencias adicionales
 
-Ninguna. DuckDB-WASM ya incluye el motor de regex (RE2). Solo se necesita la lógica de los patrones por país.
-
-### Paso 1: Diccionario de regex por país
-
-**Archivo a crear**:
-
-- `src/lib/tax-id-patterns.ts`
-
-**Implementación paso a paso**:
-
-1. Crear un diccionario con los formatos oficiales de cada país:
-
-```typescript
-export interface TaxIdPattern {
-  country: string
-  countryCode: string
-  label: string
-  regex: string
-  description: string
-  example: string
-}
-
-export const TAX_ID_PATTERNS: TaxIdPattern[] = [
-  {
-    country: 'Argentina',
-    countryCode: 'AR',
-    label: 'CUIT',
-    regex: '^\\d{2}-\\d{8}-\\d{1}$',
-    description: '2 dígitos - 8 dígitos - 1 dígito verificador',
-    example: '20-12345678-3',
-  },
-  {
-    country: 'Chile',
-    countryCode: 'CL',
-    label: 'RUT',
-    regex: '^\\d{1,2}\\.?\\d{3}\\.?\\d{3}-[\\dkK]$',
-    description: '7-8 dígitos + guión + dígito verificador (k/K válido)',
-    example: '12.345.678-5',
-  },
-  {
-    country: 'Uruguay',
-    countryCode: 'UY',
-    label: 'RUT',
-    regex: '^\\d{12}$',
-    description: '12 dígitos numéricos',
-    example: '21000123456',
-  },
-  {
-    country: 'Ecuador',
-    countryCode: 'EC',
-    label: 'RUC',
-    regex: '^(1[0-9]|2[0-9]|[39][0-9])\\d{9}$',
-    description: '13 dígitos, empieza con 1, 2, 3 o 9',
-    example: '1790012345678',
-  },
-  {
-    country: 'Paraguay',
-    countryCode: 'PY',
-    label: 'RUC',
-    regex: '^\\d{6,8}-\\d{1}$',
-    description: '6-8 dígitos + guión + 1 dígito verificador',
-    example: '12345678-9',
-  },
-  {
-    country: 'Colombia',
-    countryCode: 'CO',
-    label: 'NIT',
-    regex: '^\\d{9,10}$',
-    description: '9-10 dígitos numéricos',
-    example: '900123456',
-  },
-  {
-    country: 'Perú',
-    countryCode: 'PE',
-    label: 'RUC',
-    regex: '^(10|20|15|17)\\d{9}$',
-    description: '11 dígitos, empieza con 10, 20, 15 o 17',
-    example: '20123456789',
-  },
-  {
-    country: 'México',
-    countryCode: 'MX',
-    label: 'RFC',
-    regex: '^[A-Z&]{3,4}\\d{6}[A-Z\\d]{3}$',
-    description: '3-4 letras + 6 dígitos (fecha) + 3 caracteres alfanuméricos',
-    example: 'GODE561231GR8',
-  },
-]
+```bash
+pnpm add @duckdb/duckdb-wasm @duckdb/duckdb-wasm-binding fflate
 ```
 
-> **Nota**: Estos regex son de validación de formato solamente. No validan dígito verificador (checksum). Para CUIT argentino, por ejemplo, se puede agregar una segunda capa que calcule el módulo 11, pero eso es opcional y se puede hacer después.
+- `@duckdb/duckdb-wasm` + `@duckdb/duckdb-wasm-binding`: Motor DuckDB WASM
+- `fflate`: Descompresión ZIP ligera (para soporte futuro de XLSX/XLSM)
+
+### Países soportados (MVP)
+
+| País      | ID   | Algoritmo                                          | Estado |
+| --------- | ---- | -------------------------------------------------- | ------ |
+| Argentina | CUIT | Módulo 11, pesos `[5,4,3,2,7,6,5,4,3,2]`           | MVP    |
+| Chile     | RUT  | Módulo 11 variante, pesos `[2,3,4,5,6,7]` en ciclo | MVP    |
+
+### Paso 1: Validadores puros (TypeScript)
+
+**Archivos a crear**:
+
+- `src/lib/validators/ar-cuit.ts` — `validateCUIT(cuit: string): boolean`
+- `src/lib/validators/cl-rut.ts` — `validateRUT(rut: string): boolean`
+- `src/lib/validators/index.ts` — Barrel export + `TaxIdConfig` type
+
+Cada validador:
+
+1. Limpia caracteres no numéricos (guiones, puntos)
+2. Valida longitud y formato básico
+3. Aplica algoritmo Módulo 11
+4. Compara contra dígito verificador
+
+> Los validadores son funciones puras, testeables con Vitest sin necesidad de DuckDB.
+
+### Paso 2: Validación en DuckDB (JavaScript UDFs vs hybrid approach)
+
+**Decisión de implementación**: DuckDB WASM's JavaScript UDFs (`LANGUAGE javascript`) tienen bugs conocidos con Emscripten (`_setThrew is not defined`). Se usó un approach híbrido:
+
+1. Cargar el CSV en DuckDB (ventajas: detección de tipos, queries SQL rápidas)
+2. Extraer los datos con `SELECT * FROM tabla`
+3. Validar en JavaScript puro usando las mismas funciones de validación individual
+4. Mostrar resultados con el status `tax_id_valido`
+
+**Archivo**: `src/lib/duckdb/udf.ts`
+
+```typescript
+export async function validateWithUDF(
+  conn: DuckDBConnection,
+  tableName: string,
+  columnName: string,
+  validator: (value: string) => boolean
+): Promise<{
+  rows: Record<string, unknown>[]
+  validCount: number
+  errorCount: number
+  columns: string[]
+}> {
+  const columns = await getColumns(conn, tableName)
+  const result = await executeQuery(conn, `SELECT * FROM ${tableName}`)
+
+  const rows = result.rows.map((row) => ({
+    ...row,
+    tax_id_valido: validator(String(row[columnName] ?? '')),
+  }))
+
+  const validCount = rows.filter((r) => r.tax_id_valido).length
+  const errorCount = rows.length - validCount
+
+  return { rows, validCount, errorCount, columns }
+}
+```
+
+**Query resultante**:
+
+```sql
+SELECT * FROM uploaded_data  -- DuckDB carga los datos
+-- Luego en JavaScript:
+-- rows.map(row => ({ ...row, tax_id_valido: validator(row[column]) }))
+```
+
+### Paso 3: UI del Tax ID Validator
+
+**Ruta**: `/tax-id-validator`
+
+**Componentes**:
+
+- `src/components/tax-id-validator/tax-id-validator.tsx` — Tabs: "Validate Code" / "Validate File"
+- `src/components/tax-id-validator/single-validator.tsx` — Input + resultado instantáneo (solo TS)
+- `src/components/tax-id-validator/file-validator.tsx` — Upload → columna → validación DuckDB
+- `src/components/tax-id-validator/validation-results.tsx` — Métricas + tabla errores + export
+
+**Flujo individual**: Input → `validateCUIT()`/`validateRUT()` → badge verde/rojo
+
+**Flujo masivo**: Upload CSV → `loadCSVFile()` → `DESCRIBE` → usuario selecciona columna → `registerTaxIdUDFs()` → query con UDF → resultados
 
 2. Exportar la lista para que la UI la use como opciones de un dropdown.
 
@@ -575,40 +581,40 @@ export function TaxIdValidator({ isDataLoaded, onValidationComplete }: TaxIdVali
 
   async function handleValidate() {
     if (!selectedColumn || !selectedPattern) return
-    
+
     setIsValidating(true)
     const db = await getDuckDB()
-    
+
     const sql = `
       SELECT *,
-        CASE 
-          WHEN regexp_matches("${selectedColumn}", '${selectedPattern.regex}') 
-          THEN 'OK' 
-          ELSE 'ERROR' 
+        CASE
+          WHEN regexp_matches("${selectedColumn}", '${selectedPattern.regex}')
+          THEN 'OK'
+          ELSE 'ERROR'
         END AS estado_validacion
       FROM uploaded_data
     `
-    
+
     const result = await db.query(sql)
     const rows = await result.toArray()
-    
+
     const errors = rows.filter((r: any) => r.estado_validacion === 'ERROR')
     const valid = rows.filter((r: any) => r.estado_validacion === 'OK')
-    
+
     onValidationComplete({
       total: rows.length,
       valid: valid.length,
       errors: errors.length,
       data: rows,
     })
-    
+
     setIsValidating(false)
   }
 
   return (
     <div className="flex flex-col gap-4 rounded-xl border p-6">
       <h3 className="text-lg font-semibold">Tax ID Validator</h3>
-      
+
       {/* Selector de columna */}
       <div>
         <label className="text-sm text-muted-foreground">Columna con Tax IDs</label>
@@ -627,7 +633,7 @@ export function TaxIdValidator({ isDataLoaded, onValidationComplete }: TaxIdVali
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       {/* Selector de país/patrón */}
       <div>
         <label className="text-sm text-muted-foreground">Formato de Tax ID</label>
@@ -646,15 +652,15 @@ export function TaxIdValidator({ isDataLoaded, onValidationComplete }: TaxIdVali
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       {selectedPattern && (
         <p className="text-xs text-muted-foreground">
           Formato: <code>{selectedPattern.regex}</code> — {selectedPattern.description}
         </p>
       )}
-      
-      <Button 
-        onClick={handleValidate} 
+
+      <Button
+        onClick={handleValidate}
         disabled={!selectedColumn || !selectedPattern || isValidating}
       >
         {isValidating ? 'Validando...' : 'Validar'}
@@ -678,10 +684,10 @@ export function TaxIdValidator({ isDataLoaded, onValidationComplete }: TaxIdVali
 
 ```sql
 SELECT *,
-  CASE 
-    WHEN regexp_matches("cuit", '^\d{2}-\d{8}-\d{1}$') 
-    THEN 'OK' 
-    ELSE 'ERROR' 
+  CASE
+    WHEN regexp_matches("cuit", '^\d{2}-\d{8}-\d{1}$')
+    THEN 'OK'
+    ELSE 'ERROR'
   END AS estado_validacion
 FROM uploaded_data;
 ```
@@ -724,15 +730,15 @@ interface ValidationResult {
 <div className="grid grid-cols-3 gap-4">
   <div className="rounded-lg border p-4 text-center">
     <p className="text-2xl font-bold">{result.total.toLocaleString()}</p>
-    <p className="text-sm text-muted-foreground">Total filas</p>
+    <p className="text-muted-foreground text-sm">Total filas</p>
   </div>
   <div className="rounded-lg border p-4 text-center">
     <p className="text-2xl font-bold text-emerald-600">{result.valid.toLocaleString()}</p>
-    <p className="text-sm text-muted-foreground">Válidos</p>
+    <p className="text-muted-foreground text-sm">Válidos</p>
   </div>
   <div className="rounded-lg border p-4 text-center">
     <p className="text-2xl font-bold text-red-600">{result.errors.toLocaleString()}</p>
-    <p className="text-sm text-muted-foreground">Con errores</p>
+    <p className="text-muted-foreground text-sm">Con errores</p>
   </div>
 </div>
 ```
@@ -740,11 +746,11 @@ interface ValidationResult {
 2. **Badges de estado**: En la tabla de resultados, cada fila tiene un badge:
 
 ```tsx
-<span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
-  row.estado_validacion === 'OK' 
-    ? 'bg-emerald-100 text-emerald-700' 
-    : 'bg-red-100 text-red-700'
-}`}>
+<span
+  className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
+    row.estado_validacion === 'OK' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+  }`}
+>
   {row.estado_validacion}
 </span>
 ```
@@ -752,7 +758,7 @@ interface ValidationResult {
 3. **Filtrar errores**: Un botón que filtre solo las filas con `estado_validacion === 'ERROR'` y las muestre en la tabla:
 
 ```typescript
-const errorRows = result.data.filter(row => row.estado_validacion === 'ERROR')
+const errorRows = result.data.filter((row) => row.estado_validacion === 'ERROR')
 ```
 
 4. **Exportar solo errores**: Reusar la función `exportToCSV` del Paso 4 de la Feature 1, pero pasándole solo `errorRows`. El contador descarga un CSV limpio con las ~50 filas que necesita corregir.
@@ -792,23 +798,23 @@ Usuario                    Browser (React)              DuckDB-WASM
 
 ### Feature 1: Tax Reports Processor
 
-| Aspecto | Evaluación |
-|---|---|
-| **Viabilidad** | **Alta.** DuckDB-WASM es una tecnología probada, bien documentada y con soporte activo. La File API es nativa del browser. La virtualización con `@tanstack/react-virtual` es estándar en la industria. |
-| **Dificultad técnica** | **Media.** Los bloques individuales (File API, DuckDB, virtualización) son moderados. El desafío real está en integrarlos bien y manejar edge cases (encoding de CSV, headers inconsistentes, archivos corruptos). |
-| **Tiempo estimado** | **2-3 semanas** para un MVP funcional (una persona, dedicación parcial). |
-| **Riesgos principales** | 1) DuckDB-WASM bundle grande (~30 MB) puede afectar Lighthouse score. 2) `read_csv_auto` puede fallar con CSVs mal formateados. 3) El WASM puede fallar en Safari (probar bien). |
-| **Lo que ya tenés** | La página `tax-processor/page.tsx` ya tiene el mockup del drag & drop y la UI estática. Solo falta conectar la lógica real. |
+| Aspecto                 | Evaluación                                                                                                                                                                                                         |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Viabilidad**          | **Alta.** DuckDB-WASM es una tecnología probada, bien documentada y con soporte activo. La File API es nativa del browser. La virtualización con `@tanstack/react-virtual` es estándar en la industria.            |
+| **Dificultad técnica**  | **Media.** Los bloques individuales (File API, DuckDB, virtualización) son moderados. El desafío real está en integrarlos bien y manejar edge cases (encoding de CSV, headers inconsistentes, archivos corruptos). |
+| **Tiempo estimado**     | **2-3 semanas** para un MVP funcional (una persona, dedicación parcial).                                                                                                                                           |
+| **Riesgos principales** | 1) DuckDB-WASM bundle grande (~30 MB) puede afectar Lighthouse score. 2) `read_csv_auto` puede fallar con CSVs mal formateados. 3) El WASM puede fallar en Safari (probar bien).                                   |
+| **Lo que ya tenés**     | La página `tax-processor/page.tsx` ya tiene el mockup del drag & drop y la UI estática. Solo falta conectar la lógica real.                                                                                        |
 
 ### Feature 2: Validador Masivo de Tax IDs
 
-| Aspecto | Evaluación |
-|---|---|
-| **Viabilidad** | **Muy alta.** Esto es literalmente una query SQL con `CASE WHEN` + `regexp_matches`. DuckDB ya hace todo el trabajo pesado. La parte difícil es definir los regex correctos (y eso ya lo tenés). |
-| **Dificultad técnica** | **Baja-Media.** La lógica de negocio es simple: aplicar regex a una columna. Los regex de formatos de tax IDs son conocidos y estandarizados. |
-| **Tiempo estimado** | **3-5 días** para un MVP funcional (una persona, dedicación parcial). |
+| Aspecto                 | Evaluación                                                                                                                                                                                                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Viabilidad**          | **Muy alta.** Esto es literalmente una query SQL con `CASE WHEN` + `regexp_matches`. DuckDB ya hace todo el trabajo pesado. La parte difícil es definir los regex correctos (y eso ya lo tenés).                                                                                  |
+| **Dificultad técnica**  | **Baja-Media.** La lógica de negocio es simple: aplicar regex a una columna. Los regex de formatos de tax IDs son conocidos y estandarizados.                                                                                                                                     |
+| **Tiempo estimado**     | **3-5 días** para un MVP funcional (una persona, dedicación parcial).                                                                                                                                                                                                             |
 | **Riesgos principales** | 1) Algunos países tienen formatos que cambian (ej: Mexico RFC cambió recientemente). 2) Los regex de formato puro no validan dígito verificador (checksum). Eso requiere lógica adicional en JS. 3) Performance del regex en 2M de filas puede variar (pero ~200ms es aceptable). |
-| **Lo que ya tenés** | DuckDB-WASM será dependency de la Feature 1. Esta feature se construye encima de la misma infraestructura. |
+| **Lo que ya tenés**     | DuckDB-WASM será dependency de la Feature 1. Esta feature se construye encima de la misma infraestructura.                                                                                                                                                                        |
 
 ### Dependencia entre features
 
@@ -820,12 +826,14 @@ Feature 1 (Tax Reports Processor)
 ```
 
 La Feature 1 establece:
+
 - La infraestructura de DuckDB-WASM (`src/lib/duckdb.ts`)
 - El componente de carga de archivos (`FileUploader`)
 - La tabla virtualizada (`DataTable`)
 - El patrón de estado compartido
 
 La Feature 2 solo agrega:
+
 - El diccionario de regex (`tax-id-patterns.ts`)
 - El componente de configuración (`TaxIdValidator`)
 - La consulta SQL con `regexp_matches`
@@ -833,10 +841,10 @@ La Feature 2 solo agrega:
 
 ### Resumen de dificultad
 
-| Feature | Dificultad | Tiempo | ¿Se puede hacer sin IA? |
-|---|---|---|---|
-| Tax Reports Processor | Media | 2-3 semanas | Sí, con documentación de DuckDB-WASM a mano |
-| Validador de Tax IDs | Baja-Media | 3-5 días | Sí, es básicamente una query SQL |
+| Feature               | Dificultad | Tiempo      | ¿Se puede hacer sin IA?                     |
+| --------------------- | ---------- | ----------- | ------------------------------------------- |
+| Tax Reports Processor | Media      | 2-3 semanas | Sí, con documentación de DuckDB-WASM a mano |
+| Validador de Tax IDs  | Baja-Media | 3-5 días    | Sí, es básicamente una query SQL            |
 
 **Veredicto final**: Ambas features son perfectamente viables de implementar a mano sin asistencia de IA. La documentación oficial de DuckDB-WASM es buena y hay tutoriales. La parte más tricky es el setup inicial de DuckDB-WASM con Next.js (configuración de WASM loading), pero una vez que eso funciona, todo lo demás es CRUD + SQL básico.
 
