@@ -15,6 +15,7 @@ import {
   ArrowRight,
   Sparkles,
   FileSearch,
+  Check,
   type LucideIcon,
 } from "lucide-react"
 import {
@@ -41,6 +42,12 @@ const PRODUCTS: Product[] = [
     title: "Tax reports processor",
     href: "/tax-processor",
     icon: BarChart3,
+    badge: { label: "Try for free!", color: "green" },
+  },
+  {
+    title: "Tax IDs validatior",
+    href: "/tax-id-validator",
+    icon: Check,
     badge: { label: "Try for free!", color: "green" },
   },
   {
