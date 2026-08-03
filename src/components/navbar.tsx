@@ -24,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useLanguage } from '@/lib/i18n/context'
 
 type ProductBadge = {
   label: string
@@ -37,38 +38,13 @@ type Product = {
   badge: ProductBadge
 }
 
-const PRODUCTS: Product[] = [
-  {
-    title: 'Tax reports processor',
-    href: '/tax-processor',
-    icon: BarChart3,
-    badge: { label: 'Try for free!', color: 'green' },
-  },
-  {
-    title: 'Tax IDs validatior',
-    href: '/tax-id-validator',
-    icon: Check,
-    badge: { label: 'Try for free!', color: 'green' },
-  },
-  {
-    title: 'AI Conciliation',
-    href: '/conciliation',
-    icon: Sparkles,
-    badge: { label: 'AI Powered', color: 'purple' },
-  },
-  {
-    title: 'Smart Audits',
-    href: '/audits',
-    icon: FileSearch,
-    badge: { label: 'Dont miss more revenue!', color: 'black' },
-  },
-  {
-    title: 'Tax Calendar',
-    href: '/calendar',
-    icon: BarChart3,
-    badge: { label: 'Try for free!', color: 'green' },
-  },
-]
+const ICONS: Record<string, LucideIcon> = {
+  taxProcessor: BarChart3,
+  taxValidator: Check,
+  aiConciliation: Sparkles,
+  smartAudits: FileSearch,
+  taxCalendar: BarChart3,
+}
 
 const BADGE_STYLES: Record<ProductBadge['color'], { bg: string; text: string }> = {
   green: {
@@ -89,13 +65,34 @@ const BADGE_STYLES: Record<ProductBadge['color'], { bg: string; text: string }> 
   },
 }
 
+const PRODUCT_KEYS = [
+  'taxProcessor',
+  'taxValidator',
+  'aiConciliation',
+  'smartAudits',
+  'taxCalendar',
+] as const
+const BADGE_KEYS = ['tryFree', 'aiPowered', 'dontMiss'] as const
+const BADGE_COLORS: Record<string, ProductBadge['color']> = {
+  tryFree: 'green',
+  aiPowered: 'purple',
+  dontMiss: 'black',
+}
+const PRODUCT_HREFS: Record<string, string> = {
+  taxProcessor: '/tax-processor',
+  taxValidator: '/tax-id-validator',
+  aiConciliation: '/conciliation',
+  smartAudits: '/audits',
+  taxCalendar: '/calendar',
+}
+
 export function Navbar() {
   const { theme, setTheme } = useTheme()
+  const { lang, setLang, t } = useLanguage()
   const [mounted, setMounted] = React.useState(false)
   const [productsOpen, setProductsOpen] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [mobileProductsOpen, setMobileProductsOpen] = React.useState(false)
-  const [lang, setLang] = React.useState<'EN' | 'ES'>('EN')
   const productsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null)
 
   React.useEffect(() => {
@@ -111,6 +108,16 @@ export function Navbar() {
   const handleProductsLeave = () => {
     productsTimeoutRef.current = setTimeout(() => setProductsOpen(false), 150)
   }
+
+  const products: Product[] = PRODUCT_KEYS.map((key) => ({
+    title: t.nav.productsList[key],
+    href: PRODUCT_HREFS[key],
+    icon: ICONS[key],
+    badge: {
+      label: t.nav.badges[BADGE_KEYS[PRODUCT_KEYS.indexOf(key)] || 'tryFree'],
+      color: BADGE_COLORS[BADGE_KEYS[PRODUCT_KEYS.indexOf(key)] || 'tryFree'],
+    },
+  }))
 
   return (
     <header className="border-border bg-background/80 sticky top-0 z-50 w-full border-b backdrop-blur-md">
@@ -132,7 +139,7 @@ export function Navbar() {
             onMouseLeave={handleProductsLeave}
           >
             <button className="text-foreground hover:bg-muted flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors">
-              Products
+              {t.nav.products}
               <ChevronDown className="text-muted-foreground h-3.5 w-3.5" />
             </button>
 
@@ -143,7 +150,7 @@ export function Navbar() {
                 onMouseEnter={handleProductsEnter}
                 onMouseLeave={handleProductsLeave}
               >
-                {PRODUCTS.map((product) => {
+                {products.map((product) => {
                   const styles = BADGE_STYLES[product.badge.color]
                   const Icon = product.icon
                   return (
@@ -175,7 +182,7 @@ export function Navbar() {
             href="/company"
             className="text-foreground hover:bg-muted rounded-full px-4 py-2 text-sm font-medium transition-colors"
           >
-            Company
+            {t.nav.company}
           </Link>
         </nav>
 
@@ -236,7 +243,7 @@ export function Navbar() {
                 onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
                 className="text-foreground hover:bg-muted flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
               >
-                Products
+                {t.nav.products}
                 <ChevronRight
                   className={`text-muted-foreground h-4 w-4 transition-transform ${
                     mobileProductsOpen ? 'rotate-90' : ''
@@ -245,7 +252,7 @@ export function Navbar() {
               </button>
               {mobileProductsOpen && (
                 <div className="mt-1 space-y-1 pl-3">
-                  {PRODUCTS.map((product) => {
+                  {products.map((product) => {
                     const styles = BADGE_STYLES[product.badge.color]
                     const Icon = product.icon
                     return (
@@ -280,7 +287,7 @@ export function Navbar() {
               className="text-foreground hover:bg-muted mt-1 block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Company
+              {t.nav.company}
             </Link>
           </nav>
         </div>
