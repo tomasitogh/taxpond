@@ -1,7 +1,8 @@
 import { validateCUIT, formatCUIT } from './ar-cuit'
 import { validateRUT, formatRUT } from './cl-rut'
+import { validateCanadaTaxId, formatCanadaTaxId } from './ca-tax-id'
 
-export type TaxIdType = 'AR_CUIT' | 'CL_RUT'
+export type TaxIdType = 'AR_CUIT' | 'CL_RUT' | 'CA_TAX_ID'
 
 export interface TaxIdConfig {
   type: TaxIdType
@@ -35,9 +36,20 @@ export const TAX_ID_CONFIGS: Record<TaxIdType, TaxIdConfig> = {
     format: formatRUT,
     udfFunction: 'is_valid_rut',
   },
+  CA_TAX_ID: {
+    type: 'CA_TAX_ID',
+    country: 'Canada',
+    label: 'SIN / BN',
+    placeholder: 'XXX-XXX-XXX or XXXXX-XXXX-XX-XXXX',
+    example: '130-692-544 or 49000-0007-RC-0001',
+    validate: validateCanadaTaxId,
+    format: formatCanadaTaxId,
+    udfFunction: 'is_valid_ca_tax_id',
+  },
 }
 
 export const TAX_ID_OPTIONS = Object.values(TAX_ID_CONFIGS)
 
 export { validateCUIT, formatCUIT } from './ar-cuit'
 export { validateRUT, formatRUT } from './cl-rut'
+export { validateCanadaTaxId, formatCanadaTaxId } from './ca-tax-id'

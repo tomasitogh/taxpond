@@ -10,10 +10,10 @@ export function HomePageContent() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-6 text-center">
-        <span className="border-border bg-muted text-muted-foreground mb-4 rounded-full border px-3 py-1 text-xs font-medium">
+      <section className="flex min-h-[calc(75vh-4rem)] flex-col items-center justify-center px-6 text-center">
+        {/* <span className="border-border bg-muted text-muted-foreground mb-4 rounded-full border px-3 py-1 text-xs font-medium">
           {t.home.badge}
-        </span>
+        </span> */}
         <h1 className="text-foreground text-4xl font-semibold tracking-tight sm:text-6xl">
           {t.home.hero.title}
           <br />
@@ -56,7 +56,7 @@ export function HomePageContent() {
       </section> */}
 
       {/* Features Section */}
-      <section className="px-6 py-20">
+      <section className="px-6 py-15">
         <div className="mx-auto max-w-4xl">
           <p className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
             {t.home.features.label}

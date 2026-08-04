@@ -28,7 +28,7 @@ import { useLanguage } from '@/lib/i18n/context'
 
 type ProductBadge = {
   label: string
-  color: 'purple' | 'green' | 'yellow' | 'black'
+  color: 'purple' | 'green' | 'yellow' | 'black' | 'gray'
 }
 
 type Product = {
@@ -63,6 +63,10 @@ const BADGE_STYLES: Record<ProductBadge['color'], { bg: string; text: string }> 
     bg: 'bg-yellow/10',
     text: 'text-black',
   },
+  gray: {
+    bg: 'bg-muted',
+    text: 'text-muted-foreground',
+  },
 }
 
 const PRODUCT_KEYS = [
@@ -72,11 +76,18 @@ const PRODUCT_KEYS = [
   'smartAudits',
   'taxCalendar',
 ] as const
-const BADGE_KEYS = ['tryFree', 'aiPowered', 'dontMiss'] as const
+const BADGE_KEYS = [
+  'notAvailable',
+  'tryFree',
+  'notAvailable',
+  'notAvailable',
+  'notAvailable',
+] as const
 const BADGE_COLORS: Record<string, ProductBadge['color']> = {
   tryFree: 'green',
   aiPowered: 'purple',
   dontMiss: 'black',
+  notAvailable: 'gray',
 }
 const PRODUCT_HREFS: Record<string, string> = {
   taxProcessor: '/tax-processor',
@@ -109,6 +120,7 @@ export function Navbar() {
     productsTimeoutRef.current = setTimeout(() => setProductsOpen(false), 150)
   }
 
+  // Se pone el badge y descripcion de un producto, por el orden.
   const products: Product[] = PRODUCT_KEYS.map((key) => ({
     title: t.nav.productsList[key],
     href: PRODUCT_HREFS[key],
