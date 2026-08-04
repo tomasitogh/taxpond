@@ -13,6 +13,7 @@ const es = {
       tryFree: '¡Pruébalo gratis!',
       aiPowered: 'Impulsado por IA',
       dontMiss: '¡No pierdas más ingresos!',
+      notAvailable: 'No disponible',
     },
   },
   home: {
