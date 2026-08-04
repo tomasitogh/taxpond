@@ -84,7 +84,7 @@ const es = {
     team: {
       title: 'El Equipo',
       description:
-        'Somos un equipo remoto de 2 personas repartidas en Buenos Aires. Nuestros orígenes abarcan firmas de contabilidad Big Four y comercio electrónico.',
+        'Somos un equipo remoto de 1 persona en Buenos Aires. Nuestros orígenes abarcan firmas de contabilidad Big Four y desarrollos en E-commerce.',
       members: [{ name: 'Tomás González Humphreys', role: 'CEO & Fundador' }],
     },
     contact: {

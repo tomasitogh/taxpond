@@ -84,7 +84,7 @@ const en = {
     team: {
       title: 'The Team',
       description:
-        'We are a remote-first team of 2 people spread across Buenos Aires. Our backgrounds span Big Four accounting firms and e-commerce.',
+        'We are a remote-first team of 1 person in Buenos Aires. Our backgrounds span Big Four accounting firms and e-commerce developments.',
       members: [{ name: 'Tomás González Humphreys', role: 'CEO & Founder' }],
     },
     contact: {
