@@ -15,8 +15,8 @@ export default function TaxProcessorPage() {
         Tax Reports Processor
       </h1>
       <p className="text-muted-foreground mt-3 max-w-lg">
-        Upload your financial data and instantly generate compliant tax reports. Supports CSV,
-        Excel, and PDF formats.
+        Upload your financial data and instantly generate compliant tax reports. Supports CSV files
+        — more formats coming soon.
       </p>
 
       {/* Pipeline Section */}

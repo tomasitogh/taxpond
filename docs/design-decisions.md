@@ -87,3 +87,17 @@ Componente global usado en el layout de toda la aplicación.
 - Código simple, modular y bien estructurado.
 - Priorizar la estructura y el layout de la UI por sobre la lógica de negocio.
 - No implementar lógica de backend compleja en etapas iniciales.
+
+---
+
+## DuckDB WASM — Approach híbrido
+
+**Decisión:** No se usan macros SQL (`CREATE MACRO`) ni UDFs de JavaScript en DuckDB WASM para parseo de tipos (números, fechas). Se usa un approach híbrido:
+
+1. DuckDB filtra, agrupa y cuenta sobre valores raw VARCHAR (SQL simple).
+2. Para GROUP BY + SUM: `list()` agrupa valores raw → JavaScript los parsea y suma (`normalizeNumberString` detecta `.`/`,` para miles vs decimales).
+3. Los tipos de columna (String/Date/Number) son una capa visual en la UI que se resuelven en JavaScript después de la consulta.
+
+**Por qué:** El bundle MVP de duckdb-wasm (sin exception handling) no puede propagar errores SQL — cualquier fallo produce `_setThrew is not defined` en vez del error real. Este patrón ya estaba documentado en `docs/feature-specs.md` como solución al mismo problema con UDFs del validador de Tax IDs.
+
+**Primera validación exitosa:** 5 de agosto de 2026 — subir un CSV, filtrar por columnas, agrupar con COUNT y SUM, y exportar el reporte procesado. Todo funciona correctamente.
