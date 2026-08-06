@@ -69,7 +69,7 @@ export function buildQuery(tableName: string, options: QueryOptions): string {
     const numCols = columns.filter(
       (col) => typeOf(columnTypes, col) === 'number' && !groupBy.includes(col)
     )
-    const lists = numCols.map((col) => `list(${quoteIdent(col)}) AS _raw_${col}`)
+    const lists = numCols.map((col) => `list(${quoteIdent(col)}) AS ${quoteIdent(`_raw_${col}`)}`)
     const selectList = [...keys, ...lists, 'COUNT(*) AS row_count'].join(', ')
     const ordinals = groupBy.map((_, i) => String(i + 1)).join(', ')
     sql = `SELECT ${selectList} FROM ${table}${where} GROUP BY ${ordinals} ORDER BY ${ordinals}`
@@ -181,7 +181,15 @@ export function processGroupedResults<T extends Record<string, unknown>>(
       const rawKey = `_raw_${col}`
       if (rawKey in newRow) {
         const rawList = newRow[rawKey]
-        newRow[col] = Array.isArray(rawList) ? sumRawNumbers(rawList) : 0
+        let listArray: unknown[] = []
+        if (Array.isArray(rawList)) {
+          listArray = rawList
+        } else if (rawList && typeof (rawList as any).toArray === 'function') {
+          listArray = (rawList as any).toArray()
+        } else if (rawList && typeof rawList === 'object' && Symbol.iterator in rawList) {
+          listArray = Array.from(rawList as any)
+        }
+        newRow[col] = sumRawNumbers(listArray)
         delete newRow[rawKey]
       }
     }

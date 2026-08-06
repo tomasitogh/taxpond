@@ -30,3 +30,34 @@ export async function exportQueryToCSV(
     await db.dropFile(virtualFile)
   }
 }
+
+/**
+ * Converts an array of rows to a CSV string and downloads it.
+ * Used for grouped/post-processed results.
+ */
+export function downloadCSVFromRows(
+  columns: string[],
+  rows: Record<string, unknown>[],
+  downloadName: string
+): void {
+  const header = columns.map((col) => `"${col.replaceAll('"', '""')}"`).join(',')
+  const body = rows
+    .map((row) =>
+      columns
+        .map((col) => {
+          const val = row[col]
+          if (val == null) return ''
+          return `"${String(val).replaceAll('"', '""')}"`
+        })
+        .join(',')
+    )
+    .join('\n')
+  const csvContent = `${header}\n${body}`
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = downloadName
+  anchor.click()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}

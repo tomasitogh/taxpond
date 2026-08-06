@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/i18n/context'
 
 interface DataTableProps {
   columns: string[]
@@ -20,8 +21,9 @@ function formatCell(value: unknown): string {
   return String(value)
 }
 
-function formatHeader(column: string): string {
-  return column === 'row_count' ? 'Rows' : column
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function formatHeader(column: string, t: any): string {
+  return column === 'row_count' ? t.taxProcessor.tryPage.rows : column
 }
 
 export function DataTable({
@@ -33,6 +35,7 @@ export function DataTable({
   isLoading,
   onPageChange,
 }: DataTableProps) {
+  const { t } = useLanguage()
   const pageCount = Math.max(1, Math.ceil(filteredCount / pageSize))
   const from = filteredCount === 0 ? 0 : (page - 1) * pageSize + 1
   const to = Math.min(page * pageSize, filteredCount)
@@ -50,7 +53,7 @@ export function DataTable({
                   key={col}
                   className="text-muted-foreground px-4 py-3 text-left text-xs font-medium whitespace-nowrap"
                 >
-                  {formatHeader(col)}
+                  {formatHeader(col, t)}
                 </th>
               ))}
             </tr>
@@ -62,7 +65,7 @@ export function DataTable({
                   colSpan={columns.length}
                   className="text-muted-foreground px-4 py-8 text-center text-sm"
                 >
-                  No rows match the current query.
+                  {t.taxProcessor.tryPage.noRows}
                 </td>
               </tr>
             ) : (
@@ -84,8 +87,11 @@ export function DataTable({
       <div className="border-border flex items-center justify-between border-t px-4 py-3">
         <p className="text-muted-foreground text-xs">
           {filteredCount === 0
-            ? '0 rows'
-            : `Showing ${from.toLocaleString()}-${to.toLocaleString()} of ${filteredCount.toLocaleString()} rows`}
+            ? t.taxProcessor.tryPage.rowsCount.replace('{count}', '0')
+            : t.taxProcessor.tryPage.showingRows
+                .replace('{from}', from.toLocaleString())
+                .replace('{to}', to.toLocaleString())
+                .replace('{total}', filteredCount.toLocaleString())}
         </p>
         <div className="flex items-center gap-2">
           <Button
@@ -98,7 +104,9 @@ export function DataTable({
             <ChevronLeft className="h-4 w-4" />
           </Button>
           <span className="text-muted-foreground text-xs">
-            Page {page.toLocaleString()} of {pageCount.toLocaleString()}
+            {t.taxProcessor.tryPage.pageOf
+              .replace('{page}', page.toLocaleString())
+              .replace('{pageCount}', pageCount.toLocaleString())}
           </span>
           <Button
             variant="outline"

@@ -14,15 +14,17 @@ import { FileValidator } from './file-validator'
 import { ValidationResults } from './validation-results'
 import { TAX_ID_OPTIONS, type TaxIdType } from '@/lib/validators'
 import type { ValidationResults as ValidationResultsType } from './validation-results'
+import { useLanguage } from '@/lib/i18n/context'
 
 export function TaxIdValidator() {
+  const { t } = useLanguage()
   const [selectedType, setSelectedType] = useState<TaxIdType>('AR_CUIT')
   const [validationResults, setValidationResults] = useState<ValidationResultsType | null>(null)
 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label className="text-foreground text-sm font-medium">Country / Tax ID Type</label>
+        <label className="text-foreground text-sm font-medium">{t.taxIdValidator.label}</label>
         <Select value={selectedType} onValueChange={(v) => setSelectedType(v as TaxIdType)}>
           <SelectTrigger className="w-full max-w-xs">
             <SelectValue />
@@ -39,8 +41,8 @@ export function TaxIdValidator() {
 
       <Tabs defaultValue="single">
         <TabsList>
-          <TabsTrigger value="single">Validate Code</TabsTrigger>
-          <TabsTrigger value="file">Validate File</TabsTrigger>
+          <TabsTrigger value="single">{t.taxIdValidator.tabs.single}</TabsTrigger>
+          <TabsTrigger value="file">{t.taxIdValidator.tabs.file}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="single">

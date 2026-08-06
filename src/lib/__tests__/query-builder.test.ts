@@ -98,6 +98,38 @@ describe('processGroupedResults', () => {
     expect(processed[0]).not.toHaveProperty('_raw_Amount')
     expect(columns).toEqual(['Currency', 'Amount', 'row_count'])
   })
+
+  it('handles objects with toArray() method (like Arrow Vectors)', () => {
+    const rows = [
+      {
+        Currency: 'USD',
+        _raw_Amount: {
+          toArray: () => ['150.25', '300.75'],
+        },
+        row_count: BigInt(2),
+      },
+    ]
+    const { rows: processed } = processGroupedResults(rows, ['Currency', '_raw_Amount'])
+    expect((processed[0] as Record<string, unknown>).Amount).toBeCloseTo(451.0)
+  })
+
+  it('handles custom iterable objects', () => {
+    const customIterable = {
+      *[Symbol.iterator]() {
+        yield '50.00'
+        yield '25.50'
+      },
+    }
+    const rows = [
+      {
+        Currency: 'USD',
+        _raw_Amount: customIterable,
+        row_count: BigInt(2),
+      },
+    ]
+    const { rows: processed } = processGroupedResults(rows, ['Currency', '_raw_Amount'])
+    expect((processed[0] as Record<string, unknown>).Amount).toBeCloseTo(75.5)
+  })
 })
 
 describe('buildQuery', () => {
@@ -136,7 +168,7 @@ describe('buildQuery', () => {
       offset: 0,
     })
     expect(sql).toBe(
-      'SELECT "Currency", list("Amount") AS _raw_Amount, COUNT(*) AS row_count ' +
+      'SELECT "Currency", list("Amount") AS "_raw_Amount", COUNT(*) AS row_count ' +
         `FROM "uploaded_data" WHERE "Currency" = 'USD' GROUP BY 1 ORDER BY 1 LIMIT 50 OFFSET 0`
     )
   })
@@ -148,7 +180,7 @@ describe('buildQuery', () => {
       groupBy: ['Currency', 'Date'],
     })
     expect(sql).toBe(
-      'SELECT "Currency", "Date", list("Amount") AS _raw_Amount, COUNT(*) AS row_count ' +
+      'SELECT "Currency", "Date", list("Amount") AS "_raw_Amount", COUNT(*) AS row_count ' +
         'FROM "uploaded_data" GROUP BY 1, 2 ORDER BY 1, 2'
     )
   })

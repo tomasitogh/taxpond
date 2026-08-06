@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { FileText, Loader2, Upload } from 'lucide-react'
+import { useLanguage } from '@/lib/i18n/context'
 
 interface FileUploaderProps {
   isLoading: boolean
@@ -18,6 +19,7 @@ export function FileUploader({
   rowCount,
   onFileSelect,
 }: FileUploaderProps) {
+  const { t } = useLanguage()
   const [isDragOver, setIsDragOver] = React.useState(false)
   const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -40,11 +42,11 @@ export function FileUploader({
         onDragLeave={() => setIsDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`flex w-72 items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-4 text-sm font-medium transition-colors ${
+        className={`flex w-72 items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-4 text-sm font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
           isDragOver
-            ? 'text-foreground border-[#FFD600] bg-[#FFD600]/5'
-            : 'border-border bg-card text-muted-foreground hover:border-muted-foreground/30'
-        } ${isLoading ? 'cursor-wait opacity-70' : ''}`}
+            ? 'text-foreground scale-[1.02] border-[#FFD600] bg-[#FFD600]/10'
+            : 'border-border bg-card text-muted-foreground hover:text-foreground hover:border-[#FFD600] hover:bg-[#FFD600]/5'
+        } ${isLoading ? 'cursor-wait opacity-70 hover:scale-100 active:scale-100' : ''}`}
       >
         {isLoading ? (
           <>
@@ -59,7 +61,7 @@ export function FileUploader({
           </>
         ) : (
           <>
-            Upload file
+            {t.taxProcessor.steps.uploadFile}
             <Upload className="h-4 w-4" />
           </>
         )}
@@ -78,7 +80,7 @@ export function FileUploader({
       />
       {fileName && !isLoading && (
         <span className="text-muted-foreground text-xs">
-          {rowCount.toLocaleString()} rows loaded
+          {rowCount.toLocaleString()} {t.taxProcessor.tryPage.rowsLoaded}
         </span>
       )}
     </div>

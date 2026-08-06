@@ -15,6 +15,7 @@ import { loadFile } from '@/lib/duckdb'
 import { validateWithUDF } from '@/lib/duckdb/udf'
 import { TAX_ID_CONFIGS, type TaxIdType } from '@/lib/validators'
 import type { ValidationResults } from './validation-results'
+import { useLanguage } from '@/lib/i18n/context'
 
 interface FileValidatorProps {
   selectedType: TaxIdType
@@ -22,6 +23,7 @@ interface FileValidatorProps {
 }
 
 export function FileValidator({ selectedType, onValidationComplete }: FileValidatorProps) {
+  const { t } = useLanguage()
   const { db, conn } = useDuckDB()
   const [file, setFile] = useState<File | null>(null)
   const [columns, setColumns] = useState<string[]>([])
@@ -47,12 +49,12 @@ export function FileValidator({ selectedType, onValidationComplete }: FileValida
         setRowCount(result.rowCount)
         setSelectedColumn('')
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load file')
+        setError(err instanceof Error ? err.message : t.taxIdValidator.file.failedLoad)
       } finally {
         setIsLoading(false)
       }
     },
-    [db, conn]
+    [db, conn, t]
   )
 
   const handleValidate = useCallback(async () => {
@@ -72,16 +74,18 @@ export function FileValidator({ selectedType, onValidationComplete }: FileValida
         columns: result.columns,
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Validation failed')
+      setError(err instanceof Error ? err.message : t.taxIdValidator.file.validationFailed)
     } finally {
       setIsLoading(false)
     }
-  }, [conn, config, selectedColumn, onValidationComplete])
+  }, [conn, config, selectedColumn, onValidationComplete, t])
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="text-foreground text-sm font-medium">Upload file</label>
+        <label className="text-foreground text-sm font-medium">
+          {t.taxIdValidator.file.uploadFile}
+        </label>
         <div className="flex items-center gap-3">
           <label
             className={`border-border hover:border-muted-foreground/30 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-dashed px-4 py-2 text-sm transition-colors ${
@@ -98,12 +102,14 @@ export function FileValidator({ selectedType, onValidationComplete }: FileValida
             <span
               className={file ? 'text-emerald-700 dark:text-emerald-300' : 'text-muted-foreground'}
             >
-              {file ? file.name : 'Choose CSV file'}
+              {file ? file.name : t.taxIdValidator.file.chooseFile}
             </span>
             <input type="file" accept=".csv" onChange={handleFileChange} className="hidden" />
           </label>
           {file && (
-            <span className="text-muted-foreground text-xs">{rowCount.toLocaleString()} rows</span>
+            <span className="text-muted-foreground text-xs">
+              {rowCount.toLocaleString()} {t.taxIdValidator.file.rows}
+            </span>
           )}
         </div>
       </div>
@@ -111,11 +117,11 @@ export function FileValidator({ selectedType, onValidationComplete }: FileValida
       {columns.length > 0 && (
         <div className="flex flex-col gap-2">
           <label className="text-foreground text-sm font-medium">
-            Select column with {config.label}
+            {t.taxIdValidator.file.selectColumn.replace('{label}', config.label)}
           </label>
           <Select value={selectedColumn} onValueChange={(v) => setSelectedColumn(v ?? '')}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choose a column..." />
+              <SelectValue placeholder={t.taxIdValidator.file.chooseColumn} />
             </SelectTrigger>
             <SelectContent>
               {columns.map((col) => (
@@ -142,10 +148,10 @@ export function FileValidator({ selectedType, onValidationComplete }: FileValida
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Validating...
+            {t.taxIdValidator.file.validating}
           </>
         ) : (
-          `Validate ${config.label}`
+          t.taxIdValidator.file.validateBtn.replace('{label}', config.label)
         )}
       </Button>
     </div>
