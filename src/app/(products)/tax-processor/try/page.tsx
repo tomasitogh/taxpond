@@ -13,10 +13,11 @@ import {
   quoteIdent,
 } from '@/lib/query-builder'
 import type { ColumnType, QueryOptions } from '@/lib/query-builder'
-import { exportQueryToCSV } from '@/lib/duckdb/export'
+import { exportQueryToCSV, downloadCSVFromRows } from '@/lib/duckdb/export'
 import { FileUploader } from '@/components/tax-processor/file-uploader'
 import { ColumnControls } from '@/components/tax-processor/column-controls'
 import { DataTable } from '@/components/tax-processor/data-table'
+import { useLanguage } from '@/lib/i18n/context'
 
 const TABLE_NAME = 'uploaded_data'
 const PAGE_SIZE = 50
@@ -26,6 +27,7 @@ const MAX_DISTINCT_VALUES = 200
 type Status = 'idle' | 'loading-engine' | 'loading-file' | 'ready' | 'querying'
 
 export default function TaxProcessorTryPage() {
+  const { t } = useLanguage()
   const [status, setStatus] = React.useState<Status>('idle')
   const [error, setError] = React.useState<string | null>(null)
   const [fileName, setFileName] = React.useState<string | null>(null)
@@ -88,11 +90,11 @@ export default function TaxProcessorTryPage() {
     setError(null)
 
     if (!file.name.toLowerCase().endsWith('.csv')) {
-      setError('Only CSV files are supported for now.')
+      setError(t.taxProcessor.tryPage.onlyCsv)
       return
     }
     if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
-      setError(`File is too large. Maximum size is ${MAX_FILE_SIZE_MB} MB.`)
+      setError(t.taxProcessor.tryPage.fileTooLarge.replace('{size}', String(MAX_FILE_SIZE_MB)))
       return
     }
 
@@ -120,7 +122,7 @@ export default function TaxProcessorTryPage() {
       // Auto-run an unfiltered first page so the table shows data immediately
       await runQuery({ columns: loaded.columns, columnTypes: {} }, 1)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load file')
+      setError(err instanceof Error ? err.message : t.taxProcessor.tryPage.failedLoad)
       setStatus(columns.length > 0 ? 'ready' : 'idle')
     }
   }
@@ -157,10 +159,24 @@ export default function TaxProcessorTryPage() {
     setStatus('querying')
     setError(null)
     try {
-      // Export raw filtered data (no group by, no pagination)
-      const sql = buildExportQuery(TABLE_NAME, appliedOptions)
+      const isGrouped = (appliedOptions.groupBy?.length ?? 0) > 0
       const downloadName = `${fileName.replace(/\.csv$/i, '')}_processed.csv`
-      await exportQueryToCSV(engine.db, engine.conn, sql, downloadName)
+
+      if (isGrouped) {
+        // Run full query without limit/offset pagination
+        const sql = buildQuery(TABLE_NAME, {
+          ...appliedOptions,
+          limit: undefined,
+          offset: undefined,
+        })
+        const data = await executeQuery(engine.conn, sql)
+        const { rows, columns: cleanColumns } = processGroupedResults(data.rows, data.columns)
+        downloadCSVFromRows(cleanColumns, rows, downloadName)
+      } else {
+        // Export raw filtered data (no group by, no pagination)
+        const sql = buildExportQuery(TABLE_NAME, appliedOptions)
+        await exportQueryToCSV(engine.db, engine.conn, sql, downloadName)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed')
     } finally {
@@ -176,10 +192,10 @@ export default function TaxProcessorTryPage() {
       {/* Header */}
       <div className="text-center">
         <h1 className="text-foreground text-2xl font-bold tracking-tight sm:text-3xl">
-          Start uploading your report.
+          {t.taxProcessor.tryPage.title}
         </h1>
         <p className="text-muted-foreground sm:text-1xl mt-4 text-lg">
-          Remember, this data IS NOT being shared with anyone, this runs in your computer.
+          {t.taxProcessor.tryPage.subtitle}
         </p>
       </div>
 
@@ -187,7 +203,11 @@ export default function TaxProcessorTryPage() {
       <div className="mt-8 flex justify-center">
         <FileUploader
           isLoading={isLoadingFile}
-          loadingLabel={status === 'loading-engine' ? 'Loading engine…' : 'Reading file…'}
+          loadingLabel={
+            status === 'loading-engine'
+              ? t.taxProcessor.tryPage.loadingEngine
+              : t.taxProcessor.tryPage.readingFile
+          }
           fileName={fileName}
           rowCount={totalRows}
           onFileSelect={handleFileSelect}
@@ -227,11 +247,11 @@ export default function TaxProcessorTryPage() {
                   className="bg-[#FFD600] text-black hover:bg-[#FFD600]/90"
                 >
                   {isQuerying && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Apply query
+                  {t.taxProcessor.tryPage.applyQuery}
                 </Button>
                 <Button variant="outline" onClick={handleExport} disabled={!result || isQuerying}>
                   <Download className="h-4 w-4" />
-                  Export CSV
+                  {t.taxProcessor.tryPage.exportCsv}
                 </Button>
               </div>
             </div>
