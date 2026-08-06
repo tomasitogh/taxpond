@@ -45,17 +45,23 @@ taxpond-app/
 │   │   │   ├── single-validator.tsx
 │   │   │   ├── file-validator.tsx
 │   │   │   └── validation-results.tsx
+│   │   ├── tax-processor/        # CSV processor components
+│   │   │   ├── file-uploader.tsx # Drag & drop + click upload
+│   │   │   ├── column-controls.tsx # Per-column type/filter/group controls
+│   │   │   └── data-table.tsx    # Results table + pagination
 │   │   ├── theme-provider.tsx    # Dark/light mode
 │   │   └── ui/                   # Shadcn UI primitives
 │   └── lib/
 │       ├── duckdb/               # DuckDB WASM integration
 │       │   ├── connection.ts     # Singleton + lazy loading
 │       │   ├── csv-loader.ts     # CSV file loading
+│       │   ├── export.ts         # CSV export (COPY TO + download)
 │       │   ├── file-loaders.ts   # Generic file loaders
 │       │   ├── query.ts          # Query execution
 │       │   ├── types.ts          # TypeScript types
 │       │   ├── udf.ts            # User-defined functions
 │       │   └── provider.tsx      # React context provider
+│       ├── query-builder.ts      # SQL builder + cast macros (parse_amount/parse_date)
 │       ├── validators/           # Tax ID validators
 │       │   ├── ar-cuit.ts        # Argentina CUIT
 │       │   ├── cl-rut.ts         # Chile RUT
@@ -129,17 +135,22 @@ export async function getDuckDB(): Promise<DuckDBInstance> {
 UI actions generate SQL dynamically:
 
 ```typescript
-// src/lib/query-builder.ts (planned)
+// src/lib/query-builder.ts
 interface QueryOptions {
-  select?: string[]
-  groupBy?: string[]
-  aggregates?: { column: string; fn: 'SUM' | 'COUNT' | 'AVG' | 'MIN' | 'MAX' }[]
-  orderBy?: string
-  orderDirection?: 'ASC' | 'DESC'
-  where?: string
+  columns: string[] // all columns, original order
+  columnTypes: Record<string, ColumnType> // 'string' (default) | 'date' | 'number'
+  filters?: { column: string; value: string }[] // equality on raw VARCHAR values
+  groupBy?: string[] // grouping keys; number columns not grouped get SUM()ed
   limit?: number
+  offset?: number
 }
 ```
+
+Casts are applied in JavaScript after retrieval (the hybrid approach — DuckDB
+handles filtering, grouping, and counting on raw VARCHAR; JS parses numbers
+via `normalizeNumberString` which detects `.`/`,` punctuation for thousands
+vs decimals). For grouped queries, `list()` gathers raw values per group and
+JS sums them. All identifiers/literals are escaped via `quoteIdent`/`quoteLiteral`.
 
 ### Tax ID Validators
 
@@ -261,6 +272,8 @@ pnpm test -- --watch         # Watch mode
 | ---------------------------------- | -------------------------------------------- |
 | `src/lib/duckdb/connection.ts`     | DuckDB singleton, lazy WASM loading          |
 | `src/lib/duckdb/csv-loader.ts`     | CSV file registration and loading            |
+| `src/lib/duckdb/export.ts`         | CSV export via COPY TO + browser download    |
+| `src/lib/query-builder.ts`         | SQL builder, cast macros, number parsing     |
 | `src/lib/validators/ar-cuit.ts`    | Argentina CUIT validator                     |
 | `src/lib/validators/cl-rut.ts`     | Chile RUT validator                          |
 | `src/lib/validators/ca-tax-id.ts`  | Canada SIN/BN validator                      |
@@ -272,8 +285,8 @@ pnpm test -- --watch         # Watch mode
 
 ## Roadmap
 
-- [ ] CSV/Excel processing engine in WASM (MVP in progress)
-- [ ] Interactive data grid (filters, group by, virtual scrolling)
+- [x] CSV processing engine in WASM (MVP — `/tax-processor/try`)
+- [ ] Interactive data grid (filters, group by, column types, CSV export done; virtual scrolling pending)
 - [ ] Tax ID syntactic validator for LATAM (AR, BR, CL, MX, CO, PE)
 - [ ] AI integration (Chat-to-SQL + auto-categorization)
 - [ ] Live API verification against government APIs (AFIP, Receita Federal, SAT, SII)

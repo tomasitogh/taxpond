@@ -54,3 +54,13 @@ next-env.d.ts
 .agents/skills/teach/MISSION-FORMAT.md
 .agents/skills/teach/RESOURCES-FORMAT.md
 .agents/skills/teach/SKILL.md
+
+# Root-level teaching files and logs
+/MISSION.md
+/RESOURCES.md
+/NOTES.md
+/GLOSSARY.md
+/lessons/
+/learning-records/
+/assets/
+/skill_output.txt

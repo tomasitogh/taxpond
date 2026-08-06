@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { Download, CheckCircle2, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/i18n/context'
 
 export interface ValidationResults {
   total: number
@@ -17,6 +18,7 @@ interface ValidationResultsProps {
 }
 
 export function ValidationResults({ results }: ValidationResultsProps) {
+  const { t } = useLanguage()
   const [showErrorsOnly, setShowErrorsOnly] = useState(false)
 
   const displayData = useMemo(() => {
@@ -55,19 +57,23 @@ export function ValidationResults({ results }: ValidationResultsProps) {
           <p className="font-data text-foreground text-2xl font-bold">
             {results.total.toLocaleString()}
           </p>
-          <p className="text-muted-foreground text-sm">Total rows</p>
+          <p className="text-muted-foreground text-sm">{t.taxIdValidator.results.totalRows}</p>
         </div>
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center dark:border-emerald-800 dark:bg-emerald-950">
           <p className="font-data text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {results.valid.toLocaleString()}
           </p>
-          <p className="text-sm text-emerald-700 dark:text-emerald-300">Valid</p>
+          <p className="text-sm text-emerald-700 dark:text-emerald-300">
+            {t.taxIdValidator.results.valid}
+          </p>
         </div>
         <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-center dark:border-red-800 dark:bg-red-950">
           <p className="font-data text-2xl font-bold text-red-600 dark:text-red-400">
             {results.errors.toLocaleString()}
           </p>
-          <p className="text-sm text-red-700 dark:text-red-300">Invalid</p>
+          <p className="text-sm text-red-700 dark:text-red-300">
+            {t.taxIdValidator.results.invalid}
+          </p>
         </div>
       </div>
 
@@ -80,7 +86,7 @@ export function ValidationResults({ results }: ValidationResultsProps) {
             className="rounded-full"
           >
             <XCircle className="mr-1 h-3 w-3" />
-            Errors ({results.errors.toLocaleString()})
+            {t.taxIdValidator.results.errors.replace('{count}', results.errors.toLocaleString())}
           </Button>
           <Button
             variant={!showErrorsOnly ? 'default' : 'outline'}
@@ -89,13 +95,13 @@ export function ValidationResults({ results }: ValidationResultsProps) {
             className="rounded-full"
           >
             <CheckCircle2 className="mr-1 h-3 w-3" />
-            All ({results.total.toLocaleString()})
+            {t.taxIdValidator.results.all.replace('{count}', results.total.toLocaleString())}
           </Button>
         </div>
 
         <Button variant="outline" size="sm" onClick={handleExportCSV} className="rounded-full">
           <Download className="mr-1 h-3 w-3" />
-          Export CSV
+          {t.taxIdValidator.results.exportCsv}
         </Button>
       </div>
 
@@ -113,7 +119,7 @@ export function ValidationResults({ results }: ValidationResultsProps) {
                   </th>
                 ))}
                 <th className="border-border text-muted-foreground border-b px-3 py-2 text-left font-medium">
-                  Status
+                  {t.taxIdValidator.results.status}
                 </th>
               </tr>
             </thead>
@@ -129,12 +135,12 @@ export function ValidationResults({ results }: ValidationResultsProps) {
                     {row.tax_id_valido === true ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
                         <CheckCircle2 className="h-3 w-3" />
-                        Valid
+                        {t.taxIdValidator.results.valid}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900 dark:text-red-300">
                         <XCircle className="h-3 w-3" />
-                        Invalid
+                        {t.taxIdValidator.results.invalid}
                       </span>
                     )}
                   </td>
@@ -145,7 +151,10 @@ export function ValidationResults({ results }: ValidationResultsProps) {
         </div>
         {displayData.length > 100 && (
           <div className="border-border bg-muted text-muted-foreground border-t px-3 py-2 text-center text-xs">
-            Showing 100 of {displayData.length.toLocaleString()} rows
+            {t.taxIdValidator.results.showingRows.replace(
+              '{count}',
+              displayData.length.toLocaleString()
+            )}
           </div>
         )}
       </div>

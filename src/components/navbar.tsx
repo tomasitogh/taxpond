@@ -76,13 +76,7 @@ const PRODUCT_KEYS = [
   'smartAudits',
   'taxCalendar',
 ] as const
-const BADGE_KEYS = [
-  'notAvailable',
-  'tryFree',
-  'notAvailable',
-  'notAvailable',
-  'notAvailable',
-] as const
+const BADGE_KEYS = ['tryFree', 'tryFree', 'notAvailable', 'notAvailable', 'notAvailable'] as const
 const BADGE_COLORS: Record<string, ProductBadge['color']> = {
   tryFree: 'green',
   aiPowered: 'purple',

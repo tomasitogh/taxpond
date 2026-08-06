@@ -4,12 +4,14 @@ import { useState, useCallback } from 'react'
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { TAX_ID_CONFIGS, type TaxIdType } from '@/lib/validators'
+import { useLanguage } from '@/lib/i18n/context'
 
 interface SingleValidatorProps {
   selectedType: TaxIdType
 }
 
 export function SingleValidator({ selectedType }: SingleValidatorProps) {
+  const { t } = useLanguage()
   const [value, setValue] = useState('')
   const config = TAX_ID_CONFIGS[selectedType]
 
@@ -29,7 +31,7 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <label htmlFor="tax-id-input" className="text-foreground text-sm font-medium">
-          Enter {config.label}
+          {t.taxIdValidator.single.enter.replace('{label}', config.label)}
         </label>
         <div className="relative">
           <Input
@@ -70,13 +72,13 @@ export function SingleValidator({ selectedType }: SingleValidatorProps) {
               isValid ? 'text-emerald-700 dark:text-emerald-300' : 'text-red-700 dark:text-red-300'
             }`}
           >
-            {isValid ? 'Valid check digit' : 'Invalid check digit'}
+            {isValid ? t.taxIdValidator.single.valid : t.taxIdValidator.single.invalid}
           </span>
         </div>
       )}
 
       <p className="text-muted-foreground text-xs">
-        Example: <span className="font-data">{config.example}</span>
+        {t.taxIdValidator.single.example} <span className="font-data">{config.example}</span>
       </p>
     </div>
   )
